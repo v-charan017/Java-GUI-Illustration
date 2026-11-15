@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Event Horizon: Java GUI Escape Room</title>
+<style>
+:root{color-scheme:dark;--bg:#070912;--cy:#00f0ff;--pu:#a855f7;--tx:#cfe9ff;--ok:#3dffa0;--bd:#ff4d6d;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{min-height:100vh;background:radial-gradient(circle at 15% 0,#1d1038 0,transparent 50%),radial-gradient(circle at 95% 100%,#073340 0,transparent 45%),var(--bg);color:var(--tx);font:15px/1.6 ui-monospace,Menlo,Consolas,"Courier New",monospace}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,240,255,.035) 0 1px,transparent 1px 4px);animation:scan 9s linear infinite}
+@keyframes scan{to{background-position:0 80px}}
+@keyframes pulse{50%{opacity:.45}}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}}
+#app{max-width:820px;margin:0 auto;padding:1rem}
+header{display:flex;justify-content:space-between;align-items:center;gap:.6rem;flex-wrap:wrap;padding-bottom:.8rem;border-bottom:1px solid #1d2a44;margin-bottom:1rem}
+.logo{color:var(--cy);font-weight:700;letter-spacing:.04em;text-shadow:0 0 10px var(--cy)}
+.logo small{display:block;color:var(--pu);font-weight:400;font-size:.75rem}
+.hud{display:flex;align-items:center;gap:.8rem}
+#tm{font-size:1.5rem;color:var(--cy);text-shadow:0 0 10px var(--cy)}
+#tm.low{color:var(--bd);text-shadow:0 0 10px var(--bd);animation:pulse 1s infinite}
+h1,h2{margin:.2rem 0 .6rem;font-size:1.25rem;color:var(--cy)}
+h1{font-size:1.6rem;text-shadow:0 0 14px var(--cy)}
+.box{border:1px solid rgba(168,85,247,.45);background:rgba(10,14,30,.75);border-radius:8px;padding:1rem;margin:.7rem 0;animation:pop .35s}
+.box b{color:var(--cy)}
+.box p{margin:.4rem 0}
+pre{margin:.6rem 0;padding:.7rem;background:#0b1020;border-left:3px solid var(--pu);color:#9ef;overflow-x:auto;font:inherit;font-size:.85rem}
+table{border-collapse:collapse;width:100%;font-size:.88rem}
+td,th{border:1px solid #26365a;padding:.3rem .5rem;text-align:left}
+th{color:var(--pu)}
+button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.btn{min-height:46px;padding:.6rem 1.2rem;background:transparent;color:var(--cy);border:1px solid var(--cy);border-radius:6px;text-shadow:0 0 8px var(--cy);box-shadow:0 0 10px rgba(0,240,255,.25),inset 0 0 8px rgba(0,240,255,.08);transition:box-shadow .2s,background .2s}
+.btn:hover,.btn:active{background:rgba(0,240,255,.12);box-shadow:0 0 18px rgba(0,240,255,.6)}
+.btn.pu{color:#d6a8ff;border-color:var(--pu);text-shadow:0 0 8px var(--pu);box-shadow:0 0 10px rgba(168,85,247,.3)}
+.btn.pu:hover,.btn.pu:active{background:rgba(168,85,247,.15);box-shadow:0 0 18px rgba(168,85,247,.7)}
+.btn.sm{min-height:38px;padding:.3rem .8rem;font-size:.85rem}
+.btn:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
+.btn:focus-visible,.opt:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.row{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1rem}
+.row .btn{flex:1 1 140px}
+#prog{display:flex;gap:6px;margin-bottom:.8rem}
+#prog i{flex:1;height:6px;border-radius:3px;background:#1b2540}
+#prog i.d{background:var(--cy);box-shadow:0 0 8px var(--cy)}
+#prog i.c{background:var(--pu);box-shadow:0 0 8px var(--pu);animation:pulse 1.6s infinite}
+.lbl{color:var(--pu);font-size:.85rem;margin:.8rem 0 .2rem}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:.4rem}
+.opt{display:block;width:100%;min-height:46px;text-align:left;padding:.6rem .85rem;background:rgba(255,255,255,.03);border:1px solid #2a3b55;color:var(--tx);border-radius:6px;transition:border-color .15s,box-shadow .15s}
+.opt:hover:not(:disabled){border-color:var(--cy)}
+.opt.sel{border-color:var(--cy);box-shadow:0 0 12px rgba(0,240,255,.45)}
+.opt.ok{border-color:var(--ok);background:rgba(61,255,160,.1);box-shadow:0 0 10px rgba(61,255,160,.35)}
+.opt.bad{border-color:var(--bd);background:rgba(255,77,109,.1)}
+.opt:disabled{opacity:.3}
+.opt em{display:block;font-style:normal;color:#d6a8ff;font-size:.85rem}
+.seq{margin:.2rem 0;padding-left:1.6rem}
+.seq li{margin:.35rem 0;color:var(--cy)}
+.seq .emp{list-style:none;color:#52627f;margin-left:-1.6rem}
+.mt{display:grid;grid-template-columns:1fr 1fr;gap:.4rem 1rem}
+.mt>div{display:flex;flex-direction:column;gap:.4rem}
+.q{margin:.8rem 0}
+.q p{margin:0 0 .3rem}
+.fb{border:1px solid;border-radius:8px;padding:.8rem 1rem;margin-top:1rem;animation:pop .3s}
+.fb p{margin:.4rem 0 0;color:var(--tx)}
+.fb.good{border-color:var(--ok);color:var(--ok)}
+.fb.bad{border-color:var(--bd);color:var(--bd)}
+.fb.hint{border-color:var(--pu);color:#d6a8ff}
+.hid{display:none!important}
+.center{text-align:center}
+.modal{position:fixed;inset:0;background:rgba(3,5,12,.88);overflow:auto;padding:1rem;z-index:5}
+.modal .box{max-width:760px;margin:0 auto}
+.cur::after{content:"_";animation:pulse 1s infinite}
+@media(max-width:600px){#app{padding:.8rem}.mt{grid-template-columns:1fr}.opts{grid-template-columns:1fr}h1{font-size:1.3rem}}
+@media(prefers-reduced-motion:reduce){*,body::after{animation:none!important}}
+</style>
+</head>
+<body>
+<div id="app">
+<header>
+  <div class="logo">The Event Horizon<small>Java GUI Escape Room</small></div>
+  <div class="hud"><span id="tm" aria-live="off">05:00</span><button class="btn pu sm" id="nb">Study Notes</button></div>
+</header>
+
+<section id="s0" class="scr center">
+  <h1 class="cur">&gt; SYSTEM FAILURE</h1>
+  <div class="box" style="text-align:left">
+    <p>You are trapped inside a malfunctioning Java laboratory. The doors are locked by six security rooms, each guarding one piece of GUI programming knowledge.</p>
+    <p>Solve all six puzzles to unlock the exit before the reactor overloads. You have <b>5 minutes</b>. Each wrong answer costs <b>10 seconds</b>.</p>
+    <p>Tap the options to answer. Use <b>Hint</b> if you are stuck and <b>Study Notes</b> any time.</p>
+  </div>
+  <button class="btn" id="go">Enter the laboratory</button>
+</section>
+
+<section id="s1" class="scr hid">
+  <div id="prog"></div>
+  <h2 id="rt"></h2>
+  <div class="box" id="teach"></div>
+  <div id="pz"></div>
+  <div id="fb" class="fb hid" aria-live="polite"></div>
+  <div class="row">
+    <button class="btn pu" id="hb">Hint</button>
+    <button class="btn" id="ck">Check answer</button>
+    <button class="btn hid" id="nx">Next</button>
+  </div>
+</section>
+
+<section id="s2" class="scr hid center">
+  <h1 style="color:var(--ok);text-shadow:0 0 14px var(--ok)">&gt; EXIT UNLOCKED</h1>
+  <div class="box" style="text-align:left">
+    <p>The laboratory doors slide open and you step out into daylight. You mastered the delegation event model, listeners, components, the AWT and Swing hierarchy, frames, panels and layout managers.</p>
+    <p id="ws"></p>
+  </div>
+  <button class="btn" data-restart>Play again</button>
+</section>
+
+<section id="s3" class="scr hid center">
+  <h1 style="color:var(--bd);text-shadow:0 0 14px var(--bd)">&gt; REACTOR OVERLOAD</h1>
+  <div class="box" style="text-align:left"><p>Time ran out before you reached the exit. Review the Study Notes, then try again.</p></div>
+  <button class="btn" data-restart>Restart</button>
+  <button class="btn pu" id="nb2">Study Notes</button>
+</section>
+</div>
+
+<div id="nt" class="modal hid">
+  <div class="box"><h2>Study Notes</h2><div id="ntb"></div><button class="btn" id="nc">Close notes</button></div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s),sh=a=>a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);
+const R=[
+{n:'Delegation Event Model',k:'order',
+t:`<p>In Java GUIs a component does not handle its own events; it <b>delegates</b> them.</p>
+<p><b>Event Source</b>: the component that generates the event (for example a JButton).<br><b>Event Object</b>: carries the details of the event (for example an ActionEvent).<br><b>Event Listener</b>: an interface implemented by a class and registered on the source.<br><b>Event Handler</b>: the listener method holding your response code, such as actionPerformed().</p>
+<p>Puzzle: tap the steps in the correct order.</p>`,
+i:['Register a listener on the source: button.addActionListener(listener)','The user acts: the Event Source (the button) is clicked','An Event Object (ActionEvent) is created and sent to the listener','The Event Handler actionPerformed(ActionEvent e) runs your code'],
+h:'Nothing can be delegated until a listener is registered with the source. The handler runs last.',
+e:'In the delegation event model the source does not process events itself; it passes them to registered listeners. You first register the listener with addActionListener(), then a user action makes the source create an ActionEvent object, and finally the listener’s handler method actionPerformed() executes your code.'},
+{n:'Event Classes and Listener Interfaces',k:'match',
+t:`<p>Every event class has a matching listener interface that declares its handler methods.</p>
+<p><b>ActionEvent</b> (button click): actionPerformed()<br><b>MouseEvent</b>: mouseClicked(), mousePressed()...<br><b>KeyEvent</b>: keyPressed(), keyTyped()...<br><b>ItemEvent</b> (checkbox, choice): itemStateChanged()<br><b>WindowEvent</b>: windowClosing(), windowOpened()...<br><b>FocusEvent</b>: focusGained(), focusLost()</p>
+<p>Puzzle: tap an event class, then tap its listener interface.</p>`,
+m:[['ActionEvent','ActionListener'],['MouseEvent','MouseListener'],['KeyEvent','KeyListener'],['ItemEvent','ItemListener'],['WindowEvent','WindowListener'],['FocusEvent','FocusListener']],
+h:'The names follow a pattern: XxxEvent goes with XxxListener.',
+e:'Java names each listener interface after the event it handles, so XxxEvent pairs with XxxListener and is registered using addXxxListener(). ActionEvent covers clicks, MouseEvent and KeyEvent cover input devices, ItemEvent covers selections, WindowEvent covers window state changes and FocusEvent covers gaining or losing focus.'},
+{n:'GUI Components',k:'quiz',
+t:`<p>Swing components usually keep the AWT name with a <b>J</b> prefix.</p>
+<table><tr><th>AWT</th><th>Swing</th></tr><tr><td>Button</td><td>JButton</td></tr><tr><td>Label</td><td>JLabel</td></tr><tr><td>TextField</td><td>JTextField</td></tr><tr><td>TextArea</td><td>JTextArea</td></tr><tr><td>Checkbox</td><td>JCheckBox</td></tr><tr><td>Choice</td><td>JComboBox</td></tr></table>
+<p>Puzzle: pick the right component for each task.</p>`,
+q:[{q:'Swing: let the user pick one item from a drop-down list.',o:['JButton','JComboBox','JTextArea','JLabel'],a:1},
+{q:'Swing: let the user type several lines of text.',o:['JTextField','JLabel','JTextArea','JCheckBox'],a:2},
+{q:'AWT: show fixed, non-editable caption text.',o:['Label','Choice','TextArea','Checkbox'],a:0},
+{q:'Swing: a tick box that can be switched on or off.',o:['JButton','JLabel','JTextField','JCheckBox'],a:3},
+{q:'AWT: a single-line box for typing a name.',o:['TextField','Button','Label','Choice'],a:0}],
+h:'Choice becomes JComboBox in Swing. Fields hold one line, areas hold many.',
+e:'Swing components keep their AWT names with a J prefix: Button becomes JButton, Label becomes JLabel, TextField becomes JTextField, TextArea becomes JTextArea and Checkbox becomes JCheckBox. The main rename is Choice, which becomes JComboBox. A text field is for one line while a text area is for many lines.'},
+{n:'AWT Hierarchy and Swing',k:'quiz',
+t:`<pre>Object
+ └ Component
+    ├ Button, Label, Checkbox, Choice, TextComponent
+    │    (TextField and TextArea extend TextComponent)
+    └ Container
+        ├ Panel
+        └ Window
+            ├ Frame
+            └ Dialog</pre>
+<p>All AWT components inherit from <b>Component</b>. <b>Container</b> can hold other components. <b>Swing</b> (javax.swing) builds on AWT: <b>JComponent</b> extends Container. Swing components are <b>lightweight</b> (drawn by Java, pluggable look and feel), while AWT components are <b>heavyweight</b> (they use native OS peers).</p>
+<p>Puzzle: identify the correct class relationships.</p>`,
+q:[{q:'What is the direct superclass of Container?',o:['Component','Object','Window','Panel'],a:0},
+{q:'Which two classes are the direct subclasses of Window?',o:['Panel and Frame','Frame and Dialog','Button and Label'],a:1},
+{q:'TextField inherits from Component through which class?',o:['Panel','Container','JComponent','TextComponent'],a:3},
+{q:'Which class is the base of Swing widgets such as JButton?',o:['Window','JComponent','TextComponent','Frame'],a:1},
+{q:'Which statement about AWT versus Swing is correct?',o:['AWT is lightweight; Swing uses native OS peers','Both are drawn by native OS peers only','Swing is lightweight (drawn by Java); AWT uses native OS peers'],a:2}],
+h:'Read the tree from the top: Object, then Component, then Container, which branches into Panel and Window.',
+e:'Every AWT visual element descends from Component, and Container adds the ability to hold other components. Window is the top-level branch with Frame and Dialog, while TextField and TextArea reach Component through TextComponent. Swing’s JComponent extends Container and is lightweight, meaning Java draws it itself, unlike heavyweight AWT components that rely on native OS peers.'},
+{n:'Frames and Panels',k:'quiz',
+t:`<p><b>JFrame</b> is the top-level window with a title bar, borders and close button. <b>JPanel</b> is a lightweight container that groups components inside a window; its default layout is FlowLayout.</p>
+<pre>JFrame frame = new JFrame("My Application");
+frame.setSize(500, 400);
+frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+JPanel panel = new JPanel();
+panel.add(new JButton("Start"));
+frame.add(panel);
+frame.setVisible(true);</pre>
+<p>Puzzle: choose JFrame or JPanel for each responsibility.</p>`,
+q:[{q:'The top-level window with a title bar and close button.',o:['JFrame','JPanel'],a:0},
+{q:'A lightweight container that groups buttons and other components.',o:['JFrame','JPanel'],a:1},
+{q:'Is told what to do on close with setDefaultCloseOperation().',o:['JFrame','JPanel'],a:0},
+{q:'Uses FlowLayout as its default layout manager.',o:['JFrame','JPanel'],a:1},
+{q:'Needs setVisible(true) before anything appears on screen.',o:['JFrame','JPanel'],a:0}],
+h:'The frame is the window itself. The panel is a tray you place inside it.',
+e:'JFrame is the top-level window: it owns the title bar, size, close behaviour and visibility. JPanel is a lightweight container used to group components such as buttons, and it is then added to the frame. In the example, the panel holds the Start button, the frame holds the panel, and setVisible(true) finally displays the window.'},
+{n:'Layout Managers',k:'match',
+t:`<p>A layout manager decides how components are sized and positioned in a container.</p>
+<p><b>FlowLayout</b>: left to right, wraps to a new row.<br><b>BorderLayout</b>: NORTH, SOUTH, EAST, WEST and CENTER regions.<br><b>GridLayout</b>: equal-sized cells in rows and columns.<br><b>CardLayout</b>: a stack of components, one visible at a time.<br><b>GridBagLayout</b>: flexible grid where components can span cells (set with GridBagConstraints).</p>
+<p>Puzzle: tap a layout manager, then tap its best use case.</p>`,
+m:[['FlowLayout','A simple row of buttons that wraps like text'],['BorderLayout','Main window with header, footer, sidebar and a central area'],['GridLayout','Calculator keypad of equal-sized cells'],['CardLayout','Wizard screens where only one panel shows at a time'],['GridBagLayout','Complex form where components span rows and columns']],
+h:'Think: equal cells, five regions, one-at-a-time, wrapping row, or spanning cells.',
+e:'FlowLayout arranges components in a row and wraps them, BorderLayout splits a container into five regions and GridLayout makes equal cells like a keypad. CardLayout shows one panel at a time, which suits wizards, and GridBagLayout is the most flexible, letting components span several rows and columns using GridBagConstraints.'}
+];
+let room,t,iv,S,hints=0;
+const show=id=>document.querySelectorAll('.scr').forEach(e=>e.classList.toggle('hid',e.id!=id));
+const mmss=()=>String(Math.floor(Math.max(t,0)/60)).padStart(2,'0')+':'+String(Math.max(t,0)%60).padStart(2,'0');
+function fmt(){$('#tm').textContent=mmss();$('#tm').classList.toggle('low',t<=60)}
+function fb(c,h){const f=$('#fb');f.className='fb '+(c||'hid');f.innerHTML=h||''}
+function start(){room=0;t=300;hints=0;clearInterval(iv);fmt();iv=setInterval(()=>{t--;fmt();if(t<=0)lose()},1000);show('s1');load()}
+function lose(){clearInterval(iv);t=0;fmt();show('s3')}
+function win(){clearInterval(iv);$('#ws').textContent='Time remaining: '+mmss()+'. Hints used: '+hints+'.';show('s2')}
+function init(){const r=R[room];S={chk:false,ok:false};
+if(r.k=='order'){S.p=[];S.pool=sh(r.i.map((_,i)=>i))}
+else if(r.k=='match'){S.as=r.m.map(()=>-1);S.ro=sh(r.m.map((_,i)=>i));S.sel=0}
+else S.a=r.q.map(()=>-1)}
+function load(){const r=R[room];init();$('#rt').textContent='Room '+(room+1)+' of 6: '+r.n;$('#teach').innerHTML=r.t;
+$('#prog').innerHTML=R.map((_,i)=>'<i class="'+(i<room?'d':i==room?'c':'')+'"></i>').join('');
+fb();$('#ck').classList.remove('hid');$('#nx').classList.add('hid');draw()}
+function ready(){const r=R[room];return r.k=='order'?S.p.length==r.i.length:r.k=='match'?!S.as.includes(-1):!S.a.includes(-1)}
+function draw(){const r=R[room];let h='';
+if(r.k=='order'){
+h='<p class="lbl">Your sequence (tap a step to remove it)</p><ol class="seq">'+(S.p.map((x,i)=>'<li><button class="opt'+(S.chk?(x==i?' ok':' bad'):'')+'" data-k="rm" data-i="'+i+'">'+r.i[x]+'</button></li>').join('')||'<li class="emp">(empty)</li>')+'</ol><p class="lbl">Available steps</p><div class="opts">'+S.pool.filter(x=>!S.p.includes(x)).map(x=>'<button class="opt" data-k="add" data-i="'+x+'">'+r.i[x]+'</button>').join('')+'</div>'}
+else if(r.k=='match'){
+h='<div class="mt"><div>'+r.m.map((m,i)=>'<button class="opt'+(S.sel==i?' sel':'')+(S.chk?(S.as[i]==i?' ok':' bad'):'')+'" data-k="l" data-i="'+i+'">'+m[0]+'<em>'+(S.as[i]>=0?'matched: '+r.m[S.as[i]][1]:'tap, then pick a match')+'</em></button>').join('')+'</div><div>'+S.ro.map(j=>'<button class="opt" data-k="r" data-i="'+j+'"'+(S.as.includes(j)?' disabled':'')+'>'+r.m[j][1]+'</button>').join('')+'</div></div>'}
+else{
+h=r.q.map((q,qi)=>'<div class="q"><p>'+(qi+1)+'. '+q.q+'</p><div class="opts">'+q.o.map((o,oi)=>'<button class="opt'+(S.a[qi]==oi?' sel':'')+(S.chk&&S.a[qi]==oi?(oi==q.a?' ok':' bad'):'')+'" data-k="q" data-q="'+qi+'" data-i="'+oi+'">'+o+'</button>').join('')+'</div></div>').join('')}
+$('#pz').innerHTML=h;$('#ck').disabled=!ready()||S.chk}
+$('#pz').onclick=e=>{const b=e.target.closest('button');if(!b||S.chk||b.disabled)return;const k=b.dataset.k,i=+b.dataset.i;
+if(k=='add')S.p.push(i);else if(k=='rm')S.p.splice(i,1);
+else if(k=='l'){if(S.as[i]>=0)S.as[i]=-1;S.sel=i}
+else if(k=='r'){if(S.sel<0)return;S.as[S.sel]=i;S.sel=S.as.findIndex(v=>v<0)}
+else if(k=='q')S.a[+b.dataset.q]=i;
+draw()};
+$('#ck').onclick=()=>{const r=R[room];if(!ready()||S.chk)return;
+S.ok=r.k=='order'?S.p.every((v,i)=>v==i):r.k=='match'?S.as.every((v,i)=>v==i):S.a.every((v,i)=>v==r.q[i].a);
+S.chk=true;draw();
+fb(S.ok?'good':'bad',(S.ok?'ACCESS GRANTED':'ACCESS DENIED. 10 seconds lost.')+'<p>'+r.e+'</p>');
+$('#ck').classList.add('hid');const n=$('#nx');n.classList.remove('hid');n.textContent=S.ok?(room==5?'Unlock the exit':'Next room'):'Try again';
+if(!S.ok){t-=10;fmt();if(t<=0)lose()}};
+$('#nx').onclick=()=>{if(S.ok){if(room==5)win();else{room++;load()}}else load()};
+$('#hb').onclick=()=>{if(S.chk)return;hints++;fb('hint','Hint: '+R[room].h)};
+const notes=()=>{$('#ntb').innerHTML=R.map((r,i)=>'<h2 style="margin-top:1rem">'+(i+1)+'. '+r.n+'</h2>'+r.t.replace(/<p>Puzzle:[^]*?<\/p>/,'')).join('');$('#nt').classList.remove('hid')};
+$('#nb').onclick=$('#nb2').onclick=notes;
+$('#nc').onclick=()=>$('#nt').classList.add('hid');
+$('#go').onclick=start;
+document.querySelectorAll('[data-restart]').forEach(b=>b.onclick=start);
+</script>
+</body>
+</html>
