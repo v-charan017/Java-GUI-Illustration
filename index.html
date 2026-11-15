@@ -3,242 +3,3644 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>The Event Horizon: Java GUI Escape Room</title>
+<title>Java GUI Programming &amp; Event Handling – Interactive Learning</title>
 <style>
-:root{color-scheme:dark;--bg:#070912;--cy:#00f0ff;--pu:#a855f7;--tx:#cfe9ff;--ok:#3dffa0;--bd:#ff4d6d;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-*{box-sizing:border-box}
-html,body{margin:0}
-body{min-height:100vh;background:radial-gradient(circle at 15% 0,#1d1038 0,transparent 50%),radial-gradient(circle at 95% 100%,#073340 0,transparent 45%),var(--bg);color:var(--tx);font:15px/1.6 ui-monospace,Menlo,Consolas,"Courier New",monospace}
-body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,240,255,.035) 0 1px,transparent 1px 4px);animation:scan 9s linear infinite}
-@keyframes scan{to{background-position:0 80px}}
-@keyframes pulse{50%{opacity:.45}}
-@keyframes pop{from{opacity:0;transform:translateY(6px)}}
-#app{max-width:820px;margin:0 auto;padding:1rem}
-header{display:flex;justify-content:space-between;align-items:center;gap:.6rem;flex-wrap:wrap;padding-bottom:.8rem;border-bottom:1px solid #1d2a44;margin-bottom:1rem}
-.logo{color:var(--cy);font-weight:700;letter-spacing:.04em;text-shadow:0 0 10px var(--cy)}
-.logo small{display:block;color:var(--pu);font-weight:400;font-size:.75rem}
-.hud{display:flex;align-items:center;gap:.8rem}
-#tm{font-size:1.5rem;color:var(--cy);text-shadow:0 0 10px var(--cy)}
-#tm.low{color:var(--bd);text-shadow:0 0 10px var(--bd);animation:pulse 1s infinite}
-h1,h2{margin:.2rem 0 .6rem;font-size:1.25rem;color:var(--cy)}
-h1{font-size:1.6rem;text-shadow:0 0 14px var(--cy)}
-.box{border:1px solid rgba(168,85,247,.45);background:rgba(10,14,30,.75);border-radius:8px;padding:1rem;margin:.7rem 0;animation:pop .35s}
-.box b{color:var(--cy)}
-.box p{margin:.4rem 0}
-pre{margin:.6rem 0;padding:.7rem;background:#0b1020;border-left:3px solid var(--pu);color:#9ef;overflow-x:auto;font:inherit;font-size:.85rem}
-table{border-collapse:collapse;width:100%;font-size:.88rem}
-td,th{border:1px solid #26365a;padding:.3rem .5rem;text-align:left}
-th{color:var(--pu)}
-button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.btn{min-height:46px;padding:.6rem 1.2rem;background:transparent;color:var(--cy);border:1px solid var(--cy);border-radius:6px;text-shadow:0 0 8px var(--cy);box-shadow:0 0 10px rgba(0,240,255,.25),inset 0 0 8px rgba(0,240,255,.08);transition:box-shadow .2s,background .2s}
-.btn:hover,.btn:active{background:rgba(0,240,255,.12);box-shadow:0 0 18px rgba(0,240,255,.6)}
-.btn.pu{color:#d6a8ff;border-color:var(--pu);text-shadow:0 0 8px var(--pu);box-shadow:0 0 10px rgba(168,85,247,.3)}
-.btn.pu:hover,.btn.pu:active{background:rgba(168,85,247,.15);box-shadow:0 0 18px rgba(168,85,247,.7)}
-.btn.sm{min-height:38px;padding:.3rem .8rem;font-size:.85rem}
-.btn:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
-.btn:focus-visible,.opt:focus-visible{outline:2px solid #fff;outline-offset:2px}
-.row{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1rem}
-.row .btn{flex:1 1 140px}
-#prog{display:flex;gap:6px;margin-bottom:.8rem}
-#prog i{flex:1;height:6px;border-radius:3px;background:#1b2540}
-#prog i.d{background:var(--cy);box-shadow:0 0 8px var(--cy)}
-#prog i.c{background:var(--pu);box-shadow:0 0 8px var(--pu);animation:pulse 1.6s infinite}
-.lbl{color:var(--pu);font-size:.85rem;margin:.8rem 0 .2rem}
-.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:.4rem}
-.opt{display:block;width:100%;min-height:46px;text-align:left;padding:.6rem .85rem;background:rgba(255,255,255,.03);border:1px solid #2a3b55;color:var(--tx);border-radius:6px;transition:border-color .15s,box-shadow .15s}
-.opt:hover:not(:disabled){border-color:var(--cy)}
-.opt.sel{border-color:var(--cy);box-shadow:0 0 12px rgba(0,240,255,.45)}
-.opt.ok{border-color:var(--ok);background:rgba(61,255,160,.1);box-shadow:0 0 10px rgba(61,255,160,.35)}
-.opt.bad{border-color:var(--bd);background:rgba(255,77,109,.1)}
-.opt:disabled{opacity:.3}
-.opt em{display:block;font-style:normal;color:#d6a8ff;font-size:.85rem}
-.seq{margin:.2rem 0;padding-left:1.6rem}
-.seq li{margin:.35rem 0;color:var(--cy)}
-.seq .emp{list-style:none;color:#52627f;margin-left:-1.6rem}
-.mt{display:grid;grid-template-columns:1fr 1fr;gap:.4rem 1rem}
-.mt>div{display:flex;flex-direction:column;gap:.4rem}
-.q{margin:.8rem 0}
-.q p{margin:0 0 .3rem}
-.fb{border:1px solid;border-radius:8px;padding:.8rem 1rem;margin-top:1rem;animation:pop .3s}
-.fb p{margin:.4rem 0 0;color:var(--tx)}
-.fb.good{border-color:var(--ok);color:var(--ok)}
-.fb.bad{border-color:var(--bd);color:var(--bd)}
-.fb.hint{border-color:var(--pu);color:#d6a8ff}
-.hid{display:none!important}
-.center{text-align:center}
-.modal{position:fixed;inset:0;background:rgba(3,5,12,.88);overflow:auto;padding:1rem;z-index:5}
-.modal .box{max-width:760px;margin:0 auto}
-.cur::after{content:"_";animation:pulse 1s infinite}
-@media(max-width:600px){#app{padding:.8rem}.mt{grid-template-columns:1fr}.opts{grid-template-columns:1fr}h1{font-size:1.3rem}}
-@media(prefers-reduced-motion:reduce){*,body::after{animation:none!important}}
+/* ===== CSS TOKENS & RESET ===== */
+:root {
+  --bg: #070913;
+  --bg-card: rgba(13, 18, 36, 0.85);
+  --bg-card-hover: rgba(20, 28, 54, 0.95);
+  --bg-panel: #0b1124;
+  --bg-code: #060914;
+  --cy: #00f0ff;
+  --cy-dim: rgba(0, 240, 255, 0.15);
+  --cy-glow: 0 0 16px rgba(0, 240, 255, 0.4);
+  --pu: #b066ff;
+  --pu-dim: rgba(176, 102, 255, 0.15);
+  --pu-glow: 0 0 16px rgba(176, 102, 255, 0.4);
+  --ok: #34d399;
+  --ok-dim: rgba(52, 211, 153, 0.15);
+  --bd: #f43f5e;
+  --bd-dim: rgba(244, 63, 94, 0.15);
+  --gold: #fbbf24;
+  --gold-dim: rgba(251, 191, 36, 0.15);
+  --tx: #e2edff;
+  --tx-muted: #8ea3bf;
+  --tx-dim: #5c708a;
+  --border: rgba(0, 240, 255, 0.2);
+  --border-pu: rgba(176, 102, 255, 0.25);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 15px;
+}
+
+body {
+  min-height: 100vh;
+  background: radial-gradient(circle at 10% 0%, #1e113d 0%, transparent 45%),
+              radial-gradient(circle at 90% 100%, #06374a 0%, transparent 45%),
+              var(--bg);
+  color: var(--tx);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  overflow-x: hidden;
+  position: relative;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(0, 240, 255, 0.02) 0 1px, transparent 1px 4px);
+  z-index: 0;
+}
+
+/* ===== GLOBAL TYPOGRAPHY & OVERFLOW SAFETY ===== */
+h1, h2, h3, h4 {
+  color: var(--tx);
+  font-weight: 700;
+  line-height: 1.3;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+p {
+  margin: 0.6rem 0;
+  color: var(--tx);
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+ul, ol {
+  padding-left: 1.4rem;
+  margin: 0.6rem 0;
+}
+
+li {
+  margin: 0.35rem 0;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+strong {
+  color: var(--cy);
+  font-weight: 600;
+}
+
+code, .code-tag {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: rgba(0, 240, 255, 0.08);
+  color: #8be9fd;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 240, 255, 0.18);
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+pre {
+  margin: 0.8rem 0;
+  padding: 1rem;
+  background: var(--bg-code);
+  border-left: 3px solid var(--pu);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  color: #a5f3fc;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1.55;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-width: 100%;
+}
+pre .kw { color: #c084fc; font-weight: bold; }
+pre .cl { color: #34d399; }
+pre .cm { color: #64748b; font-style: italic; }
+pre .st { color: #fde047; }
+pre .fn { color: #67e8f9; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.8rem 0;
+  font-size: 0.88rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  margin: 0.8rem 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+th, td {
+  padding: 0.65rem 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: left;
+  vertical-align: top;
+  word-break: break-word;
+}
+
+th {
+  background: rgba(176, 102, 255, 0.12);
+  color: var(--pu);
+  font-weight: 600;
+}
+
+tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* ===== APP SHELL ===== */
+#app {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 1rem 3rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== TOP NAVIGATION ===== */
+header#masthead {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(7, 9, 19, 0.94);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem 1.2rem;
+  margin-bottom: 1.2rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: var(--cy);
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+  text-shadow: var(--cy-glow);
+}
+
+.brand-badge {
+  font-size: 0.68rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  background: var(--pu-dim);
+  color: var(--pu);
+  border: 1px solid var(--border-pu);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-pill {
+  padding: 0.5rem 1.2rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--tx-muted);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.nav-pill:hover {
+  color: var(--tx);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-pill.active {
+  background: var(--cy-dim);
+  border-color: var(--cy);
+  color: var(--cy);
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
+}
+
+.nav-pill.test-pill.active {
+  background: var(--pu-dim);
+  border-color: var(--pu);
+  color: var(--pu);
+  box-shadow: 0 0 12px rgba(176, 102, 255, 0.35);
+}
+
+/* ===== BUTTONS ===== */
+button {
+  font-family: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 42px;
+  padding: 0.55rem 1.25rem;
+  background: transparent;
+  color: var(--cy);
+  border: 1px solid var(--cy);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  text-shadow: 0 0 8px var(--cy);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.2), inset 0 0 8px rgba(0, 240, 255, 0.08);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.btn:hover:not(:disabled) {
+  background: rgba(0, 240, 255, 0.15);
+  box-shadow: 0 0 18px rgba(0, 240, 255, 0.45);
+  transform: translateY(-1px);
+}
+
+.btn.pu {
+  color: #d8b4fe;
+  border-color: var(--pu);
+  text-shadow: 0 0 8px var(--pu);
+  box-shadow: 0 0 10px rgba(176, 102, 255, 0.25), inset 0 0 8px rgba(176, 102, 255, 0.08);
+}
+
+.btn.pu:hover:not(:disabled) {
+  background: rgba(176, 102, 255, 0.15);
+  box-shadow: 0 0 18px rgba(176, 102, 255, 0.5);
+}
+
+.btn.sm {
+  min-height: 34px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.82rem;
+}
+
+.btn.lg {
+  min-height: 48px;
+  padding: 0.75rem 1.8rem;
+  font-size: 1rem;
+}
+
+.btn:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* ===== CARDS & CONTAINERS ===== */
+.card {
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 1.4rem;
+  margin: 1.1rem 0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.card-pu {
+  border-color: var(--border-pu);
+  background: rgba(22, 16, 44, 0.75);
+}
+
+.card-gold {
+  border-color: rgba(251, 191, 36, 0.3);
+  background: rgba(36, 26, 11, 0.75);
+}
+
+.card-title {
+  font-size: 1.15rem;
+  color: var(--cy);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.card-title.pu { color: var(--pu); }
+.card-title.gold { color: var(--gold); }
+
+/* ===== SECTION ROUTING ===== */
+.section-view {
+  display: none;
+  animation: fadeIn 0.35s ease-out;
+}
+.section-view.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== HERO (HOME) ===== */
+.hero {
+  text-align: center;
+  padding: 2.5rem 1rem 2rem;
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  color: var(--cy);
+  text-shadow: 0 0 24px rgba(0, 240, 255, 0.4);
+  margin-bottom: 0.8rem;
+  letter-spacing: -0.02em;
+}
+
+.hero p {
+  color: var(--tx-muted);
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.hero-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+  max-width: 640px;
+  margin: 0 auto 2.5rem;
+}
+
+.hero-card {
+  padding: 1.8rem 1.4rem;
+  border-radius: var(--radius);
+  border: 1px solid;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-align: left;
+  background: var(--bg-card);
+  position: relative;
+}
+
+.hero-card.learn-card {
+  border-color: var(--border);
+}
+.hero-card.learn-card:hover {
+  border-color: var(--cy);
+  background: rgba(0, 240, 255, 0.08);
+  box-shadow: 0 0 24px rgba(0, 240, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.hero-card.test-card {
+  border-color: var(--border-pu);
+}
+.hero-card.test-card:hover {
+  border-color: var(--pu);
+  background: rgba(176, 102, 255, 0.08);
+  box-shadow: 0 0 24px rgba(176, 102, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.hero-card .icon {
+  font-size: 2.2rem;
+  margin-bottom: 0.6rem;
+}
+
+.hero-card h2 {
+  font-size: 1.35rem;
+  margin-bottom: 0.4rem;
+}
+.hero-card.learn-card h2 { color: var(--cy); }
+.hero-card.test-card h2 { color: var(--pu); }
+
+.hero-card p {
+  font-size: 0.9rem;
+  color: var(--tx-muted);
+  margin: 0;
+}
+
+/* Syllabus tags */
+.syllabus-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.syllabus-item {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: var(--radius-sm);
+  padding: 0.9rem 1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+}
+
+.syllabus-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--cy-dim);
+  color: var(--cy);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.syllabus-item h3 {
+  font-size: 0.95rem;
+  margin-bottom: 0.2rem;
+  color: var(--tx);
+}
+
+.syllabus-item p {
+  font-size: 0.82rem;
+  color: var(--tx-muted);
+  margin: 0;
+}
+
+/* ===== LEARN SECTION LAYOUT ===== */
+.learn-shell {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.learn-sidebar {
+  position: sticky;
+  top: 75px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.8rem 0.6rem;
+}
+
+.sidebar-heading {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--tx-dim);
+  padding: 0.4rem 0.6rem 0.6rem;
+}
+
+.learn-nav-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 0.8rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--tx-muted);
+  font-size: 0.88rem;
+  text-align: left;
+  line-height: 1.35;
+  transition: all 0.2s ease;
+  margin-bottom: 0.25rem;
+}
+
+.learn-nav-btn:hover {
+  color: var(--tx);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.learn-nav-btn.active {
+  color: var(--cy);
+  background: var(--cy-dim);
+  border-color: rgba(0, 240, 255, 0.3);
+  font-weight: 600;
+}
+
+.learn-nav-btn .num-badge {
+  font-size: 0.78rem;
+  color: var(--tx-dim);
+  min-width: 1.4rem;
+  font-variant-numeric: tabular-nums;
+}
+.learn-nav-btn.active .num-badge { color: var(--cy); }
+
+.learn-nav-btn .status-dot {
+  margin-left: auto;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ok);
+  display: none;
+}
+.learn-nav-btn.completed .status-dot { display: block; }
+
+/* Progress bar inside Learn */
+.learn-progress-track {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 1.2rem;
+}
+
+.learn-progress-seg {
+  flex: 1;
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  transition: all 0.3s ease;
+}
+
+.learn-progress-seg.active {
+  background: var(--cy);
+  box-shadow: 0 0 8px var(--cy);
+}
+.learn-progress-seg.done {
+  background: var(--ok);
+}
+
+/* Topic content container */
+.topic-panel {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+.topic-panel.active {
+  display: block;
+}
+
+.topic-header {
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.topic-header h2 {
+  font-size: 1.6rem;
+  color: var(--cy);
+  text-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
+}
+
+.topic-header .subtitle {
+  color: var(--tx-muted);
+  font-size: 0.95rem;
+  margin-top: 0.3rem;
+}
+
+/* Sub-topic tab pills */
+.sub-tabs {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0.6rem;
+}
+
+.sub-pill {
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: transparent;
+  color: var(--tx-muted);
+  font-size: 0.84rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sub-pill:hover {
+  color: var(--tx);
+  border-color: var(--cy);
+}
+
+.sub-pill.active {
+  background: var(--cy-dim);
+  border-color: var(--cy);
+  color: var(--cy);
+  font-weight: 600;
+}
+
+.sub-content {
+  display: none;
+  animation: fadeIn 0.25s ease;
+}
+.sub-content.active {
+  display: block;
+}
+
+/* ===== INTERACTIVE DEMO STAGES ===== */
+.demo-stage {
+  border: 1px solid var(--border);
+  background: rgba(5, 8, 20, 0.95);
+  border-radius: var(--radius);
+  padding: 1.4rem;
+  margin: 1.2rem 0;
+  position: relative;
+}
+
+.demo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  color: var(--cy);
+  background: var(--cy-dim);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+}
+
+/* Delegation Model Interactive Flow */
+.delegation-flow {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.8rem;
+  margin: 1.2rem 0;
+}
+
+.flow-node {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(15, 22, 42, 0.7);
+  border-radius: var(--radius-sm);
+  padding: 0.9rem 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.35s ease;
+  position: relative;
+}
+
+.flow-node.active-step {
+  border-color: var(--cy);
+  background: rgba(0, 240, 255, 0.1);
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.25);
+  transform: translateX(4px);
+}
+
+.flow-node.completed-step {
+  border-color: var(--ok);
+  background: rgba(52, 211, 153, 0.08);
+}
+
+.flow-node .node-icon {
+  font-size: 1.6rem;
+  min-width: 2.4rem;
+  text-align: center;
+}
+
+.flow-node .node-content {
+  flex: 1;
+}
+
+.flow-node .node-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--tx);
+}
+.flow-node.active-step .node-title { color: var(--cy); }
+.flow-node.completed-step .node-title { color: var(--ok); }
+
+.flow-node .node-desc {
+  font-size: 0.82rem;
+  color: var(--tx-muted);
+  margin-top: 0.2rem;
+}
+
+.flow-connector {
+  text-align: center;
+  font-size: 1.2rem;
+  color: var(--tx-dim);
+  margin: -0.4rem 0;
+  transition: color 0.3s;
+}
+.flow-connector.lit {
+  color: var(--cy);
+  text-shadow: 0 0 8px var(--cy);
+}
+
+/* Simulated Java Buttons & Controls */
+.sim-app-window {
+  border: 2px solid #5a6b82;
+  border-radius: 6px;
+  background: #d4d0c8;
+  color: #111;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  margin: 1rem auto;
+  max-width: 420px;
+}
+
+.sim-window-header {
+  background: linear-gradient(90deg, #0a246a, #a6caf0);
+  color: #fff;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.82rem;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sim-window-body {
+  padding: 1.2rem;
+  background: #ece9d8;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.java-btn {
+  padding: 0.45rem 1.4rem;
+  background: #e1e1e1;
+  border: 2px solid;
+  border-color: #fff #696969 #696969 #fff;
+  font-family: inherit;
+  font-size: 0.88rem;
+  color: #000;
+  cursor: pointer;
+  font-weight: 500;
+  border-radius: 2px;
+  user-select: none;
+  transition: all 0.1s;
+}
+
+.java-btn:active, .java-btn.pressed {
+  border-color: #696969 #fff #fff #696969;
+  background: #d1d1d1;
+  transform: translate(1px, 1px);
+}
+
+.java-label {
+  color: #000;
+  font-size: 0.88rem;
+}
+
+.java-input {
+  padding: 0.35rem 0.5rem;
+  border: 1px solid #7f9db9;
+  background: #fff;
+  color: #000;
+  font-size: 0.85rem;
+  border-radius: 1px;
+}
+
+/* Event Class & Listener Interactive Cards */
+.event-interactive-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.8rem;
+  margin: 1rem 0;
+}
+
+.event-test-card {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(16, 22, 44, 0.7);
+  border-radius: var(--radius-sm);
+  padding: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.event-test-card:hover {
+  border-color: var(--cy);
+  background: rgba(0, 240, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+.event-test-card.active {
+  border-color: var(--cy);
+  background: var(--cy-dim);
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.3);
+}
+
+.event-card-icon {
+  font-size: 1.8rem;
+  margin-bottom: 0.4rem;
+}
+
+.event-card-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--tx);
+}
+
+.event-inspector {
+  margin-top: 1rem;
+  padding: 1.1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-code);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+/* Match the following interactive */
+.match-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+  margin: 1.2rem 0;
+}
+
+.match-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.match-item {
+  padding: 0.75rem 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-sm);
+  background: rgba(15, 22, 45, 0.6);
+  color: var(--tx);
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 1.4;
+  user-select: none;
+}
+
+.match-item:hover:not(.matched):not(.disabled) {
+  border-color: var(--cy);
+  background: rgba(0, 240, 255, 0.08);
+}
+
+.match-item.selected {
+  border-color: var(--cy);
+  background: var(--cy-dim);
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+}
+
+.match-item.matched {
+  border-color: var(--ok);
+  background: var(--ok-dim);
+  color: var(--ok);
+  cursor: default;
+}
+
+.match-item.error {
+  border-color: var(--bd);
+  background: var(--bd-dim);
+  color: var(--bd);
+  animation: shake 0.3s;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+/* Component Sandbox / Builder */
+.builder-grid {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 1rem;
+  margin: 1.2rem 0;
+}
+
+.builder-palette {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.palette-item {
+  padding: 0.6rem 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(15, 22, 45, 0.6);
+  border-radius: var(--radius-sm);
+  color: var(--tx);
+  font-size: 0.86rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.palette-item:hover, .palette-item.active {
+  border-color: var(--cy);
+  background: var(--cy-dim);
+  color: var(--cy);
+  font-weight: 600;
+}
+
+.builder-display {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--bg-card);
+  border-radius: var(--radius-sm);
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.builder-preview-box {
+  background: #ece9d8;
+  border: 2px inset #fff;
+  border-radius: 4px;
+  padding: 1.5rem;
+  min-height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #111;
+}
+
+/* AWT Class Tree */
+.tree-container {
+  overflow-x: auto;
+  padding: 1.2rem 0.5rem;
+  max-width: 100%;
+}
+
+.tree-node-card {
+  display: inline-block;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: rgba(15, 22, 45, 0.7);
+  margin: 0.3rem;
+  user-select: none;
+}
+
+.tree-node-card.root { border-color: #94a3b8; color: #cbd5e1; }
+.tree-node-card.comp { border-color: var(--cy); color: var(--cy); }
+.tree-node-card.container { border-color: var(--pu); color: #d8b4fe; }
+.tree-node-card.window { border-color: var(--gold); color: var(--gold); }
+.tree-node-card.leaf { border-color: rgba(255, 255, 255, 0.2); color: var(--tx); }
+.tree-node-card.swing-ext { border-color: #34d399; color: #34d399; }
+
+.tree-node-card:hover, .tree-node-card.selected {
+  box-shadow: 0 0 14px currentColor;
+  transform: translateY(-2px);
+}
+
+.tree-branch-wrap {
+  margin-left: 1.4rem;
+  padding-left: 1.2rem;
+  border-left: 2px dashed rgba(255, 255, 255, 0.15);
+  margin-top: 0.3rem;
+}
+
+/* Layout Manager Live Canvas */
+.layout-playground {
+  margin: 1.2rem 0;
+}
+
+.layout-pill-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.layout-select-pill {
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: transparent;
+  color: var(--tx-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.layout-select-pill:hover {
+  color: var(--tx);
+  border-color: var(--cy);
+}
+
+.layout-select-pill.active {
+  background: var(--cy-dim);
+  border-color: var(--cy);
+  color: var(--cy);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+}
+
+.layout-frame-simulator {
+  background: #ece9d8;
+  border: 2px solid #5a6b82;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.layout-canvas-window {
+  min-height: 250px;
+  padding: 1rem;
+  position: relative;
+  transition: all 0.4s ease;
+  overflow: hidden;
+}
+
+/* The components inside layout demo */
+.layout-cell {
+  background: #d4d0c8;
+  border: 2px solid;
+  border-color: #fff #808080 #808080 #fff;
+  border-radius: 3px;
+  padding: 0.5rem 0.8rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 1px 1px 4px rgba(0,0,0,0.15);
+  transition: all 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.layout-cell.cell-1 { background: #fee2e2; border-color: #fca5a5; color: #991b1b; }
+.layout-cell.cell-2 { background: #e0e7ff; border-color: #a5b4fc; color: #3730a3; }
+.layout-cell.cell-3 { background: #dcfce7; border-color: #86efac; color: #166534; }
+.layout-cell.cell-4 { background: #fef3c7; border-color: #fcd34d; color: #92400e; }
+.layout-cell.cell-5 { background: #f3e8ff; border-color: #d8b4fe; color: #6b21a8; }
+
+/* ===== TOPIC NAVIGATION FOOTER ===== */
+.topic-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  flex-wrap: wrap;
+}
+
+/* ===== TEST / CHALLENGE SECTION ===== */
+.test-hero {
+  text-align: center;
+  padding: 2.2rem 1rem;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.test-hero h2 {
+  font-size: 2.2rem;
+  color: var(--pu);
+  text-shadow: var(--pu-glow);
+  margin-bottom: 0.6rem;
+}
+
+.test-hero p {
+  color: var(--tx-muted);
+  font-size: 1rem;
+  margin-bottom: 1.8rem;
+}
+
+.test-mode-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.mode-card {
+  border: 1px solid var(--border-pu);
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.mode-card:hover {
+  border-color: var(--pu);
+  background: rgba(176, 102, 255, 0.09);
+  box-shadow: 0 0 20px rgba(176, 102, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.mode-card h3 {
+  color: var(--pu);
+  font-size: 1.2rem;
+  margin-bottom: 0.4rem;
+}
+
+.mode-card p {
+  font-size: 0.88rem;
+  color: var(--tx-muted);
+}
+
+/* Test Area */
+.test-quiz-shell {
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.test-hud {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem 1.2rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-pu);
+  border-radius: var(--radius-sm);
+  margin-bottom: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.hud-pill {
+  font-size: 0.88rem;
+  color: var(--tx-muted);
+}
+.hud-pill strong {
+  color: var(--tx);
+}
+
+.timer-pill {
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  color: var(--cy);
+  font-weight: 700;
+  text-shadow: var(--cy-glow);
+}
+.timer-pill.urgent {
+  color: var(--bd);
+  text-shadow: 0 0 12px var(--bd);
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse { 50% { opacity: 0.5; } }
+
+.question-card {
+  border: 1px solid var(--border-pu);
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 1.6rem;
+  margin-bottom: 1.2rem;
+  animation: fadeIn 0.3s ease;
+}
+
+.q-meta {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  margin-bottom: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.q-badge {
+  font-size: 0.72rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: var(--pu-dim);
+  color: var(--pu);
+  border: 1px solid var(--border-pu);
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.q-title {
+  font-size: 1.15rem;
+  color: var(--tx);
+  line-height: 1.5;
+  margin-bottom: 1.2rem;
+}
+
+/* Multiple choice options */
+.opt-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.65rem;
+}
+
+.opt-btn {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: 0.85rem 1.1rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.025);
+  color: var(--tx);
+  font-size: 0.92rem;
+  line-height: 1.45;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.opt-btn:hover:not(:disabled) {
+  border-color: var(--cy);
+  background: rgba(0, 240, 255, 0.06);
+}
+
+.opt-btn.selected {
+  border-color: var(--cy);
+  background: var(--cy-dim);
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
+}
+
+.opt-btn.correct {
+  border-color: var(--ok);
+  background: var(--ok-dim);
+  color: var(--ok);
+  font-weight: 600;
+}
+
+.opt-btn.wrong {
+  border-color: var(--bd);
+  background: var(--bd-dim);
+  color: var(--bd);
+}
+
+.opt-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 0.78rem;
+  font-weight: bold;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+/* Step ordering question */
+.order-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin: 1rem 0;
+}
+
+.order-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 0.9rem;
+  user-select: none;
+  cursor: grab;
+  transition: all 0.2s;
+}
+
+.order-row:active {
+  cursor: grabbing;
+  opacity: 0.8;
+}
+
+.order-row.correct {
+  border-color: var(--ok);
+  background: var(--ok-dim);
+}
+.order-row.wrong {
+  border-color: var(--bd);
+  background: var(--bd-dim);
+}
+
+.order-handle {
+  color: var(--tx-dim);
+  font-size: 1.1rem;
+}
+
+.order-num {
+  font-weight: bold;
+  color: var(--cy);
+  min-width: 1.5rem;
+}
+
+/* Feedback panel */
+.feedback-box {
+  margin-top: 1.2rem;
+  padding: 1.1rem 1.3rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid;
+  animation: fadeIn 0.3s;
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.feedback-box.correct {
+  border-color: var(--ok);
+  background: var(--ok-dim);
+  color: var(--ok);
+}
+
+.feedback-box.wrong {
+  border-color: var(--bd);
+  background: var(--bd-dim);
+  color: var(--bd);
+}
+
+.feedback-box .expl {
+  color: var(--tx);
+  margin-top: 0.5rem;
+  font-size: 0.88rem;
+}
+
+/* Results panel */
+.results-card {
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  border: 1px solid var(--border-pu);
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  max-width: 600px;
+  margin: 1.5rem auto;
+}
+
+.score-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid var(--pu);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  box-shadow: 0 0 24px rgba(176, 102, 255, 0.3);
+}
+
+.score-circle .pct {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--pu);
+  line-height: 1;
+}
+
+.score-circle .label {
+  font-size: 0.75rem;
+  color: var(--tx-muted);
+  text-transform: uppercase;
+  margin-top: 0.2rem;
+}
+
+/* ===== RESPONSIVE MEDIA QUERIES ===== */
+@media (max-width: 820px) {
+  .learn-shell {
+    grid-template-columns: 1fr;
+  }
+  .learn-sidebar {
+    position: static;
+    display: flex;
+    overflow-x: auto;
+    padding: 0.5rem;
+    gap: 0.4rem;
+    -webkit-overflow-scrolling: touch;
+  }
+  .sidebar-heading { display: none; }
+  .learn-nav-btn {
+    white-space: nowrap;
+    width: auto;
+    padding: 0.5rem 0.85rem;
+  }
+  .hero-actions, .test-mode-cards {
+    grid-template-columns: 1fr;
+  }
+  .builder-grid {
+    grid-template-columns: 1fr;
+  }
+  .match-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  #masthead {
+    padding: 0.6rem 0.8rem;
+  }
+  .brand span { font-size: 1rem; }
+  .card { padding: 1rem; }
+  .btn { padding: 0.5rem 1rem; font-size: 0.86rem; }
+}
 </style>
 </head>
 <body>
-<div id="app">
-<header>
-  <div class="logo">The Event Horizon<small>Java GUI Escape Room</small></div>
-  <div class="hud"><span id="tm" aria-live="off">05:00</span><button class="btn pu sm" id="nb">Study Notes</button></div>
+
+<header id="masthead">
+  <a href="#" class="brand" onclick="navigate('home'); return false;">
+    <span>⚡ Java GUI Learning</span>
+    <span class="brand-badge">Syllabus Edition</span>
+  </a>
+  <div class="nav-controls">
+    <button class="nav-pill active" id="pill-home" onclick="navigate('home')">Home</button>
+    <button class="nav-pill" id="pill-learn" onclick="navigate('learn')">📚 LEARN</button>
+    <button class="nav-pill test-pill" id="pill-test" onclick="navigate('test')">🧪 TEST</button>
+  </div>
 </header>
 
-<section id="s0" class="scr center">
-  <h1 class="cur">&gt; SYSTEM FAILURE</h1>
-  <div class="box" style="text-align:left">
-    <p>You are trapped inside a malfunctioning Java laboratory. The doors are locked by six security rooms, each guarding one piece of GUI programming knowledge.</p>
-    <p>Solve all six puzzles to unlock the exit before the reactor overloads. You have <b>5 minutes</b>. Each wrong answer costs <b>10 seconds</b>.</p>
-    <p>Tap the options to answer. Use <b>Hint</b> if you are stuck and <b>Study Notes</b> any time.</p>
-  </div>
-  <button class="btn" id="go">Enter the laboratory</button>
-</section>
+<div id="app">
 
-<section id="s1" class="scr hid">
-  <div id="prog"></div>
-  <h2 id="rt"></h2>
-  <div class="box" id="teach"></div>
-  <div id="pz"></div>
-  <div id="fb" class="fb hid" aria-live="polite"></div>
-  <div class="row">
-    <button class="btn pu" id="hb">Hint</button>
-    <button class="btn" id="ck">Check answer</button>
-    <button class="btn hid" id="nx">Next</button>
-  </div>
-</section>
+  <!-- ==========================================
+       SECTION 0: HOME / PORTAL
+       ========================================== -->
+  <div id="view-home" class="section-view active">
+    <div class="hero">
+      <h1>Java GUI Programming &amp; Event Handling</h1>
+      <p>An interactive, illustration-driven learning experience designed around Java's Delegation Event Model, AWT, Swing, and Layout Managers. Powered by authentic course material.</p>
+      
+      <div class="hero-actions">
+        <div class="hero-card learn-card" onclick="navigate('learn')">
+          <div class="icon">📖</div>
+          <h2>LEARN SECTION</h2>
+          <p>Explore 6 illustrated topics with animated event flowcharts, simulated GUI builders, and real-time layout visualizers.</p>
+        </div>
+        <div class="hero-card test-card" onclick="navigate('test')">
+          <div class="icon">🏆</div>
+          <h2>TEST SECTION</h2>
+          <p>Put your knowledge to the test with multiple-choice questions, match-the-pair, step ordering, and escape-room challenges.</p>
+        </div>
+      </div>
 
-<section id="s2" class="scr hid center">
-  <h1 style="color:var(--ok);text-shadow:0 0 14px var(--ok)">&gt; EXIT UNLOCKED</h1>
-  <div class="box" style="text-align:left">
-    <p>The laboratory doors slide open and you step out into daylight. You mastered the delegation event model, listeners, components, the AWT and Swing hierarchy, frames, panels and layout managers.</p>
-    <p id="ws"></p>
+      <div class="card" style="text-align: left;">
+        <h3 class="card-title pu">📚 Six Dedicated Syllabus Topics</h3>
+        <p style="color:var(--tx-muted); font-size:0.92rem; margin-bottom: 1rem;">Carefully structured following the official course curriculum:</p>
+        
+        <div class="syllabus-overview">
+          <div class="syllabus-item">
+            <div class="syllabus-num">1</div>
+            <div>
+              <h3>Event Handling Programming</h3>
+              <p>Delegation Event Model, Event Classes, and Listener Interfaces.</p>
+            </div>
+          </div>
+          <div class="syllabus-item">
+            <div class="syllabus-num">2</div>
+            <div>
+              <h3>GUI Programming</h3>
+              <p>Graphical User Interface concepts, CLI vs GUI, AWT and Swing toolkits.</p>
+            </div>
+          </div>
+          <div class="syllabus-item">
+            <div class="syllabus-num">3</div>
+            <div>
+              <h3>User Interface Components</h3>
+              <p>Interactive builder for Buttons, Labels, TextFields, Checkboxes, Lists.</p>
+            </div>
+          </div>
+          <div class="syllabus-item">
+            <div class="syllabus-num">4</div>
+            <div>
+              <h3>AWT Hierarchy of Classes</h3>
+              <p>Component, Container, Window, Frame, Dialog, and MenuComponent tree.</p>
+            </div>
+          </div>
+          <div class="syllabus-item">
+            <div class="syllabus-num">5</div>
+            <div>
+              <h3>Introduction to Swing Package</h3>
+              <p>Lightweight components, pluggable look-and-feel, and AWT comparisons.</p>
+            </div>
+          </div>
+          <div class="syllabus-item">
+            <div class="syllabus-num">6</div>
+            <div>
+              <h3>Frames, Panels &amp; Layout Managers</h3>
+              <p>JFrame, JPanel, FlowLayout, BorderLayout, GridLayout, CardLayout, GridBagLayout.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <button class="btn" data-restart>Play again</button>
-</section>
 
-<section id="s3" class="scr hid center">
-  <h1 style="color:var(--bd);text-shadow:0 0 14px var(--bd)">&gt; REACTOR OVERLOAD</h1>
-  <div class="box" style="text-align:left"><p>Time ran out before you reached the exit. Review the Study Notes, then try again.</p></div>
-  <button class="btn" data-restart>Restart</button>
-  <button class="btn pu" id="nb2">Study Notes</button>
-</section>
+  <!-- ==========================================
+       SECTION 1: LEARN (Dedicated 6 Topics)
+       ========================================== -->
+  <div id="view-learn" class="section-view">
+    <div class="learn-shell">
+
+      <!-- Left Sidebar Navigation -->
+      <aside class="learn-sidebar">
+        <div class="sidebar-heading">Syllabus Curriculum</div>
+        <button class="learn-nav-btn active" data-topic="topic-1" onclick="switchTopic('topic-1')">
+          <span class="num-badge">01</span>
+          <span>Event Handling</span>
+          <span class="status-dot"></span>
+        </button>
+        <button class="learn-nav-btn" data-topic="topic-2" onclick="switchTopic('topic-2')">
+          <span class="num-badge">02</span>
+          <span>GUI Programming</span>
+          <span class="status-dot"></span>
+        </button>
+        <button class="learn-nav-btn" data-topic="topic-3" onclick="switchTopic('topic-3')">
+          <span class="num-badge">03</span>
+          <span>UI Components</span>
+          <span class="status-dot"></span>
+        </button>
+        <button class="learn-nav-btn" data-topic="topic-4" onclick="switchTopic('topic-4')">
+          <span class="num-badge">04</span>
+          <span>AWT Class Hierarchy</span>
+          <span class="status-dot"></span>
+        </button>
+        <button class="learn-nav-btn" data-topic="topic-5" onclick="switchTopic('topic-5')">
+          <span class="num-badge">05</span>
+          <span>Swing Package</span>
+          <span class="status-dot"></span>
+        </button>
+        <button class="learn-nav-btn" data-topic="topic-6" onclick="switchTopic('topic-6')">
+          <span class="num-badge">06</span>
+          <span>Frames &amp; Layouts</span>
+          <span class="status-dot"></span>
+        </button>
+      </aside>
+
+      <!-- Main Topic Content Area -->
+      <main class="learn-content-main">
+        <!-- Progress Bar Indicator -->
+        <div class="learn-progress-track">
+          <div class="learn-progress-seg active" id="seg-1"></div>
+          <div class="learn-progress-seg" id="seg-2"></div>
+          <div class="learn-progress-seg" id="seg-3"></div>
+          <div class="learn-progress-seg" id="seg-4"></div>
+          <div class="learn-progress-seg" id="seg-5"></div>
+          <div class="learn-progress-seg" id="seg-6"></div>
+        </div>
+
+        <!-- ================= TOPIC 1 ================= -->
+        <div class="topic-panel active" id="topic-1">
+          <div class="topic-header">
+            <h2>1. Event Handling Programming</h2>
+            <div class="subtitle">Understanding Java's Delegation Event Model, Event Classes, and Listener Interfaces</div>
+          </div>
+
+          <!-- Sub-topic Pill Navigation -->
+          <div class="sub-tabs">
+            <button class="sub-pill active" onclick="switchSub('topic-1', 'sub-1-1', this)">1. Delegation Event Model</button>
+            <button class="sub-pill" onclick="switchSub('topic-1', 'sub-1-2', this)">2. Event Classes</button>
+            <button class="sub-pill" onclick="switchSub('topic-1', 'sub-1-3', this)">3. Listener Interfaces</button>
+          </div>
+
+          <!-- Subtopic 1-1: Delegation Event Model -->
+          <div class="sub-content active" id="sub-1-1">
+            <div class="card">
+              <h3 class="card-title">What is Event Handling?</h3>
+              <p><strong>Event handling</strong> is the mechanism through which a Java program responds to user actions, such as clicking a button, pressing a key, moving the mouse, or closing a window.</p>
+              <ul>
+                <li><strong>An event</strong> is an action performed by the user or system.</li>
+                <li><strong>An event source</strong> generates the event.</li>
+                <li><strong>An event listener</strong> detects the event and executes the corresponding code.</li>
+              </ul>
+              <p><em>Example:</em> Clicking a button generates an event, which triggers a specific action.</p>
+            </div>
+
+            <div class="card card-pu">
+              <h3 class="card-title pu">Java's Delegation Event Model</h3>
+              <p>Java uses the <strong>Delegation Event Model</strong> to handle events. The responsibility of handling an event is <strong>delegated</strong> from the event source to a registered listener.</p>
+              
+              <h4 style="margin: 0.8rem 0 0.4rem; color: var(--tx);">Three Main Components:</h4>
+              <ol>
+                <li><strong>Event Source:</strong> The component that generates an event (e.g., <code>JButton</code>).</li>
+                <li><strong>Event Object:</strong> Contains information about the event (e.g., <code>ActionEvent</code>).</li>
+                <li><strong>Event Listener:</strong> An object that receives and handles the event.</li>
+              </ol>
+            </div>
+
+            <!-- INTERACTIVE DELEGATION MODEL DEMONSTRATION -->
+            <div class="demo-stage">
+              <div class="demo-badge">Interactive Simulation</div>
+              <h3 style="color:var(--cy); margin-bottom: 0.4rem;">Live Delegation Model Simulator</h3>
+              <p style="color:var(--tx-muted); font-size:0.88rem; margin-bottom: 1rem;">
+                Click the simulated button inside the window below to observe how an event travels through all 6 stages of the Delegation Event Model:
+              </p>
+
+              <!-- Simulated Java GUI Window -->
+              <div class="sim-app-window">
+                <div class="sim-window-header">
+                  <span>Java Application – [Event Source Demo]</span>
+                  <span>✕</span>
+                </div>
+                <div class="sim-window-body">
+                  <div class="java-label" id="sim-app-label">Waiting for user interaction...</div>
+                  <button class="java-btn" id="sim-delegation-btn" onclick="runDelegationDemo()">
+                    [ JButton: Click Me ]
+                  </button>
+                </div>
+              </div>
+
+              <!-- Animated 6-Stage Flowchart -->
+              <div class="delegation-flow">
+                <div class="flow-node" id="dem-stage-1">
+                  <div class="node-icon">1️⃣</div>
+                  <div class="node-content">
+                    <div class="node-title">1. Listener Registration</div>
+                    <div class="node-desc"><code>button.addActionListener(listener);</code> — The listener registers itself with the event source.</div>
+                  </div>
+                </div>
+
+                <div class="flow-connector" id="dem-conn-1">↓</div>
+
+                <div class="flow-node" id="dem-stage-2">
+                  <div class="node-icon">🖱️</div>
+                  <div class="node-content">
+                    <div class="node-title">2. User Action &amp; Event Source</div>
+                    <div class="node-desc">The user performs an action (clicking the JButton). The JButton acts as the Event Source.</div>
+                  </div>
+                </div>
+
+                <div class="flow-connector" id="dem-conn-2">↓</div>
+
+                <div class="flow-node" id="dem-stage-3">
+                  <div class="node-icon">📦</div>
+                  <div class="node-content">
+                    <div class="node-title">3. Event Object Created</div>
+                    <div class="node-desc">The source encapsulates action details into an <code>ActionEvent</code> object (holding source, ID, timestamp).</div>
+                  </div>
+                </div>
+
+                <div class="flow-connector" id="dem-conn-3">↓</div>
+
+                <div class="flow-node" id="dem-stage-4">
+                  <div class="node-icon">📡</div>
+                  <div class="node-content">
+                    <div class="node-title">4. Event Delivered to Registered Listener</div>
+                    <div class="node-desc">The event is delegated and forwarded across the boundary to the registered listener object.</div>
+                  </div>
+                </div>
+
+                <div class="flow-connector" id="dem-conn-4">↓</div>
+
+                <div class="flow-node" id="dem-stage-5">
+                  <div class="node-icon">⚡</div>
+                  <div class="node-content">
+                    <div class="node-title">5. Listener Executes Handler Method</div>
+                    <div class="node-desc">The listener receives the event object and executes its callback: <code>actionPerformed(e)</code>.</div>
+                  </div>
+                </div>
+
+                <div class="flow-connector" id="dem-conn-5">↓</div>
+
+                <div class="flow-node" id="dem-stage-6">
+                  <div class="node-icon">🎉</div>
+                  <div class="node-content">
+                    <div class="node-title">6. Application Responds</div>
+                    <div class="node-desc">The application GUI updates its state in response to the user's action.</div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="text-align:center; margin-top: 1rem;">
+                <button class="btn sm" onclick="resetDelegationDemo()">↺ Reset Demonstration</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subtopic 1-2: Event Classes -->
+          <div class="sub-content" id="sub-1-2">
+            <div class="card">
+              <h3 class="card-title">Event Classes</h3>
+              <p>Event classes represent different types of events that occur in a GUI. They contain information about the event and are generally present in the <code>java.awt.event</code> package.</p>
+              
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Event Class</th>
+                      <th>Purpose &amp; Trigger</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>ActionEvent</code></td>
+                      <td>Button clicks, menu selections</td>
+                    </tr>
+                    <tr>
+                      <td><code>MouseEvent</code></td>
+                      <td>Mouse clicks, movement, drag, enter/exit</td>
+                    </tr>
+                    <tr>
+                      <td><code>KeyEvent</code></td>
+                      <td>Keyboard actions (key press, release, typing)</td>
+                    </tr>
+                    <tr>
+                      <td><code>WindowEvent</code></td>
+                      <td>Window opening, closing, activating, iconifying</td>
+                    </tr>
+                    <tr>
+                      <td><code>ItemEvent</code></td>
+                      <td>Checkbox or choice selection changes</td>
+                    </tr>
+                    <tr>
+                      <td><code>FocusEvent</code></td>
+                      <td>Component gaining or losing focus</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- INTERACTIVE EVENT CLASS DETECTOR -->
+            <div class="demo-stage">
+              <div class="demo-badge">Interactive Inspector</div>
+              <h3 style="color:var(--cy); margin-bottom: 0.4rem;">Trigger Actions to Inspect Event Classes</h3>
+              <p style="color:var(--tx-muted); font-size:0.88rem; margin-bottom: 1rem;">
+                Select different user interactions below to see which Event Class is generated and what data it encapsulates:
+              </p>
+
+              <div class="event-interactive-grid">
+                <div class="event-test-card active" onclick="inspectEvent('action', this)">
+                  <div class="event-card-icon">🖱️</div>
+                  <div class="event-card-title">Click a Button</div>
+                </div>
+                <div class="event-test-card" onclick="inspectEvent('mouse', this)">
+                  <div class="event-card-icon">🎯</div>
+                  <div class="event-card-title">Move / Drag Mouse</div>
+                </div>
+                <div class="event-test-card" onclick="inspectEvent('key', this)">
+                  <div class="event-card-icon">⌨️</div>
+                  <div class="event-card-title">Press a Key</div>
+                </div>
+                <div class="event-test-card" onclick="inspectEvent('window', this)">
+                  <div class="event-card-icon">🪟</div>
+                  <div class="event-card-title">Close a Window</div>
+                </div>
+                <div class="event-test-card" onclick="inspectEvent('item', this)">
+                  <div class="event-card-icon">☑️</div>
+                  <div class="event-card-title">Toggle Checkbox</div>
+                </div>
+                <div class="event-test-card" onclick="inspectEvent('focus', this)">
+                  <div class="event-card-icon">🔍</div>
+                  <div class="event-card-title">Gain / Lose Focus</div>
+                </div>
+              </div>
+
+              <div class="event-inspector" id="event-inspect-display">
+                <!-- Dynamically updated -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Subtopic 1-3: Listener Interfaces -->
+          <div class="sub-content" id="sub-1-3">
+            <div class="card">
+              <h3 class="card-title">Listener Interfaces</h3>
+              <p>Listener interfaces define methods that must be implemented to handle specific events. They are used to receive notifications from event sources.</p>
+              
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Listener Interface</th>
+                      <th>Purpose</th>
+                      <th>Primary Methods</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>ActionListener</code></td>
+                      <td>Handles action events</td>
+                      <td><code>actionPerformed(ActionEvent e)</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>MouseListener</code></td>
+                      <td>Handles mouse clicks and other mouse actions</td>
+                      <td><code>mouseClicked()</code>, <code>mousePressed()</code>, <code>mouseReleased()</code>, <code>mouseEntered()</code>, <code>mouseExited()</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>KeyListener</code></td>
+                      <td>Handles keyboard events</td>
+                      <td><code>keyPressed()</code>, <code>keyReleased()</code>, <code>keyTyped()</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>WindowListener</code></td>
+                      <td>Handles window events</td>
+                      <td><code>windowOpened()</code>, <code>windowClosing()</code>, <code>windowClosed()</code>, <code>windowActivated()</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>ItemListener</code></td>
+                      <td>Handles item selection changes</td>
+                      <td><code>itemStateChanged(ItemEvent e)</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>FocusListener</code></td>
+                      <td>Handles focus changes</td>
+                      <td><code>focusGained(FocusEvent e)</code>, <code>focusLost(FocusEvent e)</code></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card card-pu">
+              <h4 class="card-title pu">Java Implementation Example</h4>
+              <p>Here, <code>ActionListener</code> listens for button clicks and executes the code when the event occurs:</p>
+              <pre><span class="cm">// Registering an ActionListener on a JButton using a lambda</span>
+button.<span class="fn">addActionListener</span>(e -> {
+    System.out.<span class="fn">println</span>(<span class="st">"Button clicked!"</span>);
+});</pre>
+            </div>
+
+            <!-- INTERACTIVE MATCHING WORKBENCH -->
+            <div class="demo-stage">
+              <div class="demo-badge">Interactive Practice</div>
+              <h3 style="color:var(--cy); margin-bottom: 0.4rem;">Connect Events to their Listener Interfaces</h3>
+              <p style="color:var(--tx-muted); font-size:0.88rem; margin-bottom: 1rem;">
+                Select an Event Class on the left, then click its corresponding Listener Interface on the right:
+              </p>
+
+              <div class="match-container" id="match-topic1-box">
+                <div class="match-list" id="match-col-left">
+                  <!-- Generated by JS -->
+                </div>
+                <div class="match-list" id="match-col-right">
+                  <!-- Generated by JS -->
+                </div>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 1rem; flex-wrap:wrap; gap:0.5rem;">
+                <span id="match-status" style="font-size:0.88rem; color:var(--tx-muted);">Select an Event Class on the left to begin</span>
+                <button class="btn sm" onclick="resetTopic1Match()">↺ Reset Matching</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-footer">
+            <span></span>
+            <button class="btn" onclick="switchTopic('topic-2')">Next: GUI Programming →</button>
+          </div>
+        </div>
+
+        <!-- ================= TOPIC 2 ================= -->
+        <div class="topic-panel" id="topic-2">
+          <div class="topic-header">
+            <h2>2. GUI Programming</h2>
+            <div class="subtitle">Creating user-friendly graphical applications in Java</div>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">What is GUI Programming?</h3>
+            <p><strong>GUI (Graphical User Interface) programming</strong> involves creating applications that allow users to interact through graphical elements instead of command-line instructions.</p>
+            <p>Instead of typing commands in a terminal, users interact visually with windows, buttons, text fields, checkboxes, and menus.</p>
+            
+            <h4 style="margin: 1rem 0 0.4rem; color:var(--tx);">Common GUI Elements Include:</h4>
+            <div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin: 0.6rem 0;">
+              <span class="code-tag">Buttons</span>
+              <span class="code-tag">Text fields</span>
+              <span class="code-tag">Labels</span>
+              <span class="code-tag">Checkboxes</span>
+              <span class="code-tag">Menus</span>
+              <span class="code-tag">Windows</span>
+            </div>
+          </div>
+
+          <div class="card card-gold">
+            <h3 class="card-title gold">Java's Two Major GUI Toolkits</h3>
+            <p>Java provides two major GUI toolkits for developers:</p>
+            
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.2rem; margin-top: 1rem;">
+              <div style="border:1px solid rgba(251, 191, 36, 0.3); padding:1rem; border-radius:var(--radius-sm); background:rgba(0,0,0,0.2);">
+                <h4 style="color:var(--gold); margin-bottom:0.4rem;">1. AWT (Abstract Window Toolkit)</h4>
+                <ul style="font-size:0.88rem; padding-left:1.2rem;">
+                  <li>Java's original GUI framework.</li>
+                  <li>Package: <code>java.awt</code></li>
+                  <li>Heavyweight components (relies on native operating system widgets).</li>
+                  <li>Platform-dependent appearance.</li>
+                </ul>
+              </div>
+
+              <div style="border:1px solid rgba(0, 240, 255, 0.3); padding:1rem; border-radius:var(--radius-sm); background:rgba(0,0,0,0.2);">
+                <h4 style="color:var(--cy); margin-bottom:0.4rem;">2. Swing</h4>
+                <ul style="font-size:0.88rem; padding-left:1.2rem;">
+                  <li>Advanced GUI toolkit built on top of AWT.</li>
+                  <li>Package: <code>javax.swing</code></li>
+                  <li>Lightweight components (drawn by Java itself).</li>
+                  <li>Platform-independent appearance &amp; pluggable Look and Feel.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- BEFORE & AFTER VISUAL COMPARISON -->
+          <div class="demo-stage">
+            <div class="demo-badge">Visual Comparison</div>
+            <h3 style="color:var(--cy); margin-bottom: 0.4rem;">CLI vs GUI: Interactive Before-and-After</h3>
+            <p style="color:var(--tx-muted); font-size:0.88rem; margin-bottom: 1rem;">
+              Compare how a simple user authentication process looks in a Command-Line Interface versus a Graphical User Interface:
+            </p>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.2rem;">
+              <!-- CLI Side -->
+              <div style="background:#000; border:1px solid #333; border-radius:6px; padding:1rem; font-family:var(--font-mono); font-size:0.85rem; color:#4ade80;">
+                <div style="color:#888; border-bottom:1px solid #222; padding-bottom:0.4rem; margin-bottom:0.6rem;">Terminal (CLI)</div>
+                <p style="margin:0.2rem 0; color:#aaa;">$ java LoginApp</p>
+                <p style="margin:0.2rem 0;">Enter username: admin</p>
+                <p style="margin:0.2rem 0;">Enter password: ******</p>
+                <p style="margin:0.2rem 0; color:#38bdf8;">[AUTH OK] Welcome, admin.</p>
+              </div>
+
+              <!-- GUI Side -->
+              <div class="sim-app-window" style="margin:0; max-width:100%;">
+                <div class="sim-window-header">
+                  <span>Login Window (GUI)</span>
+                  <span>✕</span>
+                </div>
+                <div class="sim-window-body" style="padding:1rem;">
+                  <div style="display:flex; align-items:center; gap:0.5rem; width:100%;">
+                    <span class="java-label" style="min-width:65px;">Username:</span>
+                    <input type="text" class="java-input" value="admin" style="flex:1;" readonly>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:0.5rem; width:100%;">
+                    <span class="java-label" style="min-width:65px;">Password:</span>
+                    <input type="password" class="java-input" value="password" style="flex:1;" readonly>
+                  </div>
+                  <button class="java-btn" style="margin-top:0.4rem;">[ Login ]</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-footer">
+            <button class="btn sm" onclick="switchTopic('topic-1')">← Previous: Event Handling</button>
+            <button class="btn" onclick="switchTopic('topic-3')">Next: UI Components →</button>
+          </div>
+        </div>
+
+        <!-- ================= TOPIC 3 ================= -->
+        <div class="topic-panel" id="topic-3">
+          <div class="topic-header">
+            <h2>3. Learning User Interface Components</h2>
+            <div class="subtitle">Exploring the fundamental building blocks used to construct Java GUIs</div>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">User Interface Components</h3>
+            <p><strong>UI components</strong> are the graphical elements used to build an application's interface.</p>
+            
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Component</th>
+                    <th>Purpose (Official Syllabus)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>Label</code></td>
+                    <td>Displays text</td>
+                  </tr>
+                  <tr>
+                    <td><code>Button</code></td>
+                    <td>Performs an action when clicked</td>
+                  </tr>
+                  <tr>
+                    <td><code>TextField</code></td>
+                    <td>Accepts single-line input</td>
+                  </tr>
+                  <tr>
+                    <td><code>TextArea</code></td>
+                    <td>Accepts multiple-line input</td>
+                  </tr>
+                  <tr>
+                    <td><code>Checkbox</code></td>
+                    <td>Allows selecting an option</td>
+                  </tr>
+                  <tr>
+                    <td><code>RadioButton</code></td>
+                    <td>Allows selecting one option from a group</td>
+                  </tr>
+                  <tr>
+                    <td><code>Choice</code></td>
+                    <td>Provides a drop-down list</td>
+                  </tr>
+                  <tr>
+                    <td><code>List</code></td>
+                    <td>Displays a list of selectable items</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- INTERACTIVE COMPONENT BUILDER / EXPLORER -->
+          <div class="demo-stage">
+            <div class="demo-badge">Interactive Builder</div>
+            <h3 style="color:var(--cy); margin-bottom: 0.4rem;">Simulated Java Component Sandbox</h3>
+            <p style="color:var(--tx-muted); font-size:0.88rem; margin-bottom: 1rem;">
+              Select any component from the palette to preview it live in Java desktop style, test its interaction, and see its exact Java syntax:
+            </p>
+
+            <div class="builder-grid">
+              <div class="builder-palette">
+                <button class="palette-item active" onclick="selectComponent('button', this)">Button / JButton</button>
+                <button class="palette-item" onclick="selectComponent('label', this)">Label / JLabel</button>
+                <button class="palette-item" onclick="selectComponent('textfield', this)">TextField / JTextField</button>
+                <button class="palette-item" onclick="selectComponent('textarea', this)">TextArea / JTextArea</button>
+                <button class="palette-item" onclick="selectComponent('checkbox', this)">Checkbox / JCheckBox</button>
+                <button class="palette-item" onclick="selectComponent('radio', this)">RadioButton / JRadioButton</button>
+                <button class="palette-item" onclick="selectComponent('choice', this)">Choice / JComboBox</button>
+                <button class="palette-item" onclick="selectComponent('list', this)">List / JList</button>
+              </div>
+
+              <div class="builder-display">
+                <div>
+                  <h4 id="comp-name-disp" style="color:var(--cy); font-size:1.05rem;">JButton</h4>
+                  <div id="comp-purpose-disp" style="font-size:0.85rem; color:var(--tx-muted); margin-top:0.2rem;">
+                    Performs an action when clicked.
+                  </div>
+                </div>
+
+                <div class="builder-preview-box" id="comp-render-box">
+                  <!-- Live component rendered here -->
+                </div>
+
+                <pre id="comp-code-disp"><span class="cl">JButton</span> btn = <span class="kw">new</span> <span class="cl">JButton</span>(<span class="st">"Click Me"</span>);
+panel.<span class="fn">add</span>(btn);</pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-footer">
+            <button class="btn sm" onclick="switchTopic('topic-2')">← Previous: GUI Programming</button>
+            <button class="btn" onclick="switchTopic('topic-4')">Next: AWT Hierarchy →</button>
+          </div>
+        </div>
+
+        <!-- ================= TOPIC 4 ================= -->
+        <div class="topic-panel" id="topic-4">
+          <div class="topic-header">
+            <h2>4. AWT Hierarchy of Classes</h2>
+            <div class="subtitle">Exploring the object-oriented inheritance tree behind Java's GUI architecture</div>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">AWT (Abstract Window Toolkit) Hierarchy</h3>
+            <p>AWT is Java's original GUI framework. It provides classes for creating windows, buttons, text fields, and other graphical components.</p>
+            <p>Its class hierarchy is broadly divided into two main branches extending from <code>Object</code>: <strong>Component</strong> and <strong>MenuComponent</strong>.</p>
+            
+            <ul style="margin: 0.8rem 0;">
+              <li><strong>Component:</strong> Base class for visible GUI elements.</li>
+              <li><strong>Container:</strong> A component that can hold other components.</li>
+              <li><strong>Frame:</strong> A top-level window with a title bar and borders.</li>
+              <li><strong>Panel:</strong> A container used to group components.</li>
+            </ul>
+          </div>
+
+          <!-- VISUAL INTERACTIVE TREE DIAGRAM -->
+          <div class="demo-stage">
+            <div class="demo-badge">Interactive Visual Tree</div>
+            <h3 style="color:var(--cy); margin-bottom: 0.4rem;">AWT Inheritance Tree Explorer</h3>
+            <p style="color:var(--tx-muted); font-size:0.88rem; margin-bottom: 1rem;">
+              Click on any class node in the tree below to inspect its role, hierarchy position, and capabilities:
+            </p>
+
+            <div class="tree-container">
+              <div>
+                <span class="tree-node-card root" onclick="inspectTreeNode('Object')">Object</span>
+                
+                <div class="tree-branch-wrap">
+                  <!-- Branch 1: Component -->
+                  <div>
+                    <span class="tree-node-card comp" onclick="inspectTreeNode('Component')">Component</span>
+                    
+                    <div class="tree-branch-wrap">
+                      <!-- Direct subclasses of Component -->
+                      <div>
+                        <span class="tree-node-card leaf" onclick="inspectTreeNode('Label')">Label</span>
+                        <span class="tree-node-card leaf" onclick="inspectTreeNode('Button')">Button</span>
+                        <span class="tree-node-card leaf" onclick="inspectTreeNode('TextField')">TextField</span>
+                        <span class="tree-node-card leaf" onclick="inspectTreeNode('TextArea')">TextArea</span>
+                        <span class="tree-node-card leaf" onclick="inspectTreeNode('Checkbox')">Checkbox</span>
+                        <span class="tree-node-card leaf" onclick="inspectTreeNode('Choice')">Choice</span>
+                        <span class="tree-node-card leaf" onclick="inspectTreeNode('List')">List</span>
+                      </div>
+
+                      <!-- Container Subtree -->
+                      <div style="margin-top:0.6rem;">
+                        <span class="tree-node-card container" onclick="inspectTreeNode('Container')">Container</span>
+                        
+                        <div class="tree-branch-wrap">
+                          <div>
+                            <span class="tree-node-card leaf" onclick="inspectTreeNode('Panel')">Panel</span>
+                          </div>
+                          
+                          <div style="margin-top:0.4rem;">
+                            <span class="tree-node-card window" onclick="inspectTreeNode('Window')">Window</span>
+                            
+                            <div class="tree-branch-wrap">
+                              <span class="tree-node-card leaf" onclick="inspectTreeNode('Frame')">Frame</span>
+                              <span class="tree-node-card leaf" onclick="inspectTreeNode('Dialog')">Dialog</span>
+                            </div>
+                          </div>
+
+                          <!-- Swing addition -->
+                          <div style="margin-top:0.6rem;">
+                            <span class="tree-node-card swing-ext" onclick="inspectTreeNode('JComponent')">JComponent (javax.swing)</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Branch 2: MenuComponent -->
+                  <div style="margin-top: 1rem;">
+                    <span class="tree-node-card comp" onclick="inspectTreeNode('MenuComponent')">MenuComponent</span>
+                    
+                    <div class="tree-branch-wrap">
+                      <span class="tree-node-card leaf" onclick="inspectTreeNode('MenuBar')">MenuBar</span>
+                      <span class="tree-node-card leaf" onclick="inspectTreeNode('MenuItem')">MenuItem</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Detail card for selected node -->
+            <div class="card card-pu" id="tree-node-details" style="margin-top: 1rem; margin-bottom: 0;">
+              <h4 style="color:var(--pu); margin-bottom: 0.3rem;" id="node-name-disp">Component</h4>
+              <p style="font-size:0.88rem;" id="node-desc-disp">
+                Base class for visible GUI elements. All buttons, labels, and text fields inherit visual properties (bounds, foreground, background, fonts, repainting) from Component.
+              </p>
+            </div>
+          </div>
+
+          <div class="topic-footer">
+            <button class="btn sm" onclick="switchTopic('topic-3')">← Previous: UI Components</button>
+            <button class="btn" onclick="switchTopic('topic-5')">Next: Swing Package →</button>
+          </div>
+        </div>
+
+        <!-- ================= TOPIC 5 ================= -->
+        <div class="topic-panel" id="topic-5">
+          <div class="topic-header">
+            <h2>5. Introduction to Swing Package</h2>
+            <div class="subtitle">Java's advanced, platform-independent GUI toolkit built on top of AWT</div>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">What is Swing?</h3>
+            <p><strong>Swing</strong> is an advanced Java GUI toolkit built on top of AWT. It belongs to the <code>javax.swing</code> package and provides more flexible and feature-rich components.</p>
+            
+            <h4 style="margin: 1rem 0 0.4rem; color: var(--tx);">Core Features:</h4>
+            <ul>
+              <li><strong>Platform-independent appearance:</strong> Displays identically across Windows, macOS, Linux.</li>
+              <li><strong>Lightweight components:</strong> Mostly drawn by Java rather than relying on native OS widgets.</li>
+              <li><strong>Pluggable Look and Feel:</strong> Allows dynamically switching interface themes (Metal, Nimbus, Windows, System).</li>
+              <li><strong>Supports advanced components:</strong> Includes tables, trees, tabbed panes, and scroll panes.</li>
+            </ul>
+          </div>
+
+          <!-- AWT VS SWING COMPARISON TABLE -->
+          <div class="card card-pu">
+            <h3 class="card-title pu">AWT vs Swing Component Comparison</h3>
+            <p style="font-size:0.9rem; color:var(--tx-muted); margin-bottom: 0.8rem;">
+              Swing provides equivalent lightweight components prefixed with the letter <strong>J</strong>:
+            </p>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>AWT Component (Heavyweight)</th>
+                    <th>Swing Component (Lightweight)</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>Button</code></td>
+                    <td><code>JButton</code></td>
+                    <td>Push button with text, icon, and action listeners</td>
+                  </tr>
+                  <tr>
+                    <td><code>Label</code></td>
+                    <td><code>JLabel</code></td>
+                    <td>Text or image display label</td>
+                  </tr>
+                  <tr>
+                    <td><code>TextField</code></td>
+                    <td><code>JTextField</code></td>
+                    <td>Single-line user text input</td>
+                  </tr>
+                  <tr>
+                    <td><code>TextArea</code></td>
+                    <td><code>JTextArea</code></td>
+                    <td>Multi-line plain text editing area</td>
+                  </tr>
+                  <tr>
+                    <td><code>Checkbox</code></td>
+                    <td><code>JCheckBox</code></td>
+                    <td>Toggable option box with state listener</td>
+                  </tr>
+                  <tr>
+                    <td><code>Frame</code></td>
+                    <td><code>JFrame</code></td>
+                    <td>Top-level window with title bar and borders</td>
+                  </tr>
+                  <tr>
+                    <td><code>Panel</code></td>
+                    <td><code>JPanel</code></td>
+                    <td>Container used to group components inside a window</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- INTERACTIVE SWING APP SIMULATOR -->
+          <div class="demo-stage">
+            <div class="demo-badge">Interactive Swing Window</div>
+            <h3 style="color:var(--cy); margin-bottom: 0.4rem;">Live Swing Application Workbench</h3>
+            <p style="color:var(--tx-muted); font-size:0.88rem; margin-bottom: 1rem;">
+              Interact with this simulated Swing window. Experience lightweight components, interactive events, and code synchronization:
+            </p>
+
+            <div class="sim-app-window" style="max-width: 480px;">
+              <div class="sim-window-header">
+                <span>Swing Demo – JFrame</span>
+                <span>✕</span>
+              </div>
+              <div class="sim-window-body" style="align-items: stretch;">
+                <div style="display:flex; align-items:center; gap:0.5rem;">
+                  <span class="java-label" style="min-width:80px;">Name:</span>
+                  <input type="text" class="java-input" id="swing-demo-name" value="DeepMind Learner" style="flex:1;">
+                </div>
+
+                <div style="display:flex; align-items:center; gap:0.5rem;">
+                  <input type="checkbox" id="swing-demo-check" checked>
+                  <label for="swing-demo-check" class="java-label">Enable sound notifications</label>
+                </div>
+
+                <div style="display:flex; gap:0.6rem; justify-content:center; margin-top:0.4rem;">
+                  <button class="java-btn" onclick="triggerSwingDemoAction()">[ JButton: Submit ]</button>
+                  <button class="java-btn" onclick="clearSwingDemoAction()">[ JButton: Clear ]</button>
+                </div>
+
+                <div id="swing-output-console" style="background:#fff; border:1px solid #7f9db9; padding:0.5rem; font-family:var(--font-mono); font-size:0.78rem; min-height:45px; color:#0284c7;">
+                  Ready for user event...
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-footer">
+            <button class="btn sm" onclick="switchTopic('topic-4')">← Previous: AWT Hierarchy</button>
+            <button class="btn" onclick="switchTopic('topic-6')">Next: Frames, Panels &amp; Layouts →</button>
+          </div>
+        </div>
+
+        <!-- ================= TOPIC 6 ================= -->
+        <div class="topic-panel" id="topic-6">
+          <div class="topic-header">
+            <h2>6. Frames, Panels, and Layout Managers</h2>
+            <div class="subtitle">Windows, containers, and automatic layout positioning in Java GUI</div>
+          </div>
+
+          <!-- Sub-topic Pill Navigation -->
+          <div class="sub-tabs">
+            <button class="sub-pill active" onclick="switchSub('topic-6', 'sub-6-1', this)">1. Frames &amp; Panels</button>
+            <button class="sub-pill" onclick="switchSub('topic-6', 'sub-6-2', this)">2. Layout Managers</button>
+            <button class="sub-pill" onclick="switchSub('topic-6', 'sub-6-3', this)">3. Quick Revision &amp; Summary</button>
+          </div>
+
+          <!-- Subtopic 6-1: Frames & Panels -->
+          <div class="sub-content active" id="sub-6-1">
+            <div class="card">
+              <h3 class="card-title">Frames</h3>
+              <p>A <strong>Frame</strong> is a top-level window that acts as the main container of a GUI application. In Swing, <code>JFrame</code> is used to create a window.</p>
+              
+              <h4 style="margin: 0.8rem 0 0.4rem; color:var(--tx);">Important Methods:</h4>
+              <ul>
+                <li><code>setSize(width, height)</code> – Sets window dimensions.</li>
+                <li><code>setTitle(String title)</code> – Sets window title.</li>
+                <li><code>setVisible(boolean b)</code> – Displays or hides the window.</li>
+                <li><code>setDefaultCloseOperation(int op)</code> – Defines what happens when the window closes (e.g., <code>JFrame.EXIT_ON_CLOSE</code>).</li>
+              </ul>
+
+              <pre><span class="kw">import</span> javax.swing.*;
+
+<span class="kw">class</span> <span class="cl">MyWindow</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="cl">String</span>[] args) {
+        <span class="cl">JFrame</span> frame = <span class="kw">new</span> <span class="cl">JFrame</span>(<span class="st">"My Application"</span>);
+        frame.<span class="fn">setSize</span>(400, 300);
+        frame.<span class="fn">setDefaultCloseOperation</span>(<span class="cl">JFrame</span>.EXIT_ON_CLOSE);
+        frame.<span class="fn">setVisible</span>(<span class="kw">true</span>);
+    }
+}</pre>
+            </div>
+
+            <div class="card card-pu">
+              <h3 class="card-title pu">Panels</h3>
+              <p>A <strong>Panel</strong> is a container used to group and organize multiple GUI components inside a window. In Swing, <code>JPanel</code> is used.</p>
+              
+              <pre><span class="cl">JPanel</span> panel = <span class="kw">new</span> <span class="cl">JPanel</span>();
+panel.<span class="fn">add</span>(<span class="kw">new</span> <span class="cl">JButton</span>(<span class="st">"Submit"</span>));
+panel.<span class="fn">add</span>(<span class="kw">new</span> <span class="cl">JLabel</span>(<span class="st">"Enter Name:"</span>));
+
+frame.<span class="fn">add</span>(panel);</pre>
+
+              <div style="background:rgba(176, 102, 255, 0.1); border-left:3px solid var(--pu); padding:0.8rem 1rem; margin-top:0.8rem; border-radius:0 var(--radius-sm) var(--radius-sm) 0;">
+                <strong>Key difference:</strong> <code>JFrame</code> represents the main window, whereas <code>JPanel</code> groups components inside that window.
+              </div>
+            </div>
+          </div>
+
+          <!-- Subtopic 6-2: Layout Managers -->
+          <div class="sub-content" id="sub-6-2">
+            <div class="card">
+              <h3 class="card-title">Layout Managers</h3>
+              <p>Layout managers automatically control the size and positioning of components inside a container. They make GUI designs flexible and adaptable to window resizing.</p>
+              
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Layout Manager</th>
+                      <th>Arrangement Behavior</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>1. FlowLayout</strong></td>
+                      <td>Arranges components sequentially from left to right. Moves components to the next row when space is insufficient.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>2. BorderLayout</strong></td>
+                      <td>Divides the container into five regions: North, South, East, West, and Center.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>3. GridLayout</strong></td>
+                      <td>Arranges components in a rectangular grid of rows and columns, with equal-sized cells.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>4. CardLayout</strong></td>
+                      <td>Arranges components like a stack of cards, displaying only one card at a time.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>5. GridBagLayout</strong></td>
+                      <td>Arranges components in a flexible grid where components can occupy different sizes and multiple cells.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- INTERACTIVE LAYOUT MANAGER PLAYGROUND -->
+            <div class="demo-stage layout-playground">
+              <div class="demo-badge">Interactive Layout Sandbox</div>
+              <h3 style="color:var(--cy); margin-bottom: 0.4rem;">Switch Layout Managers in Real-Time</h3>
+              <p style="color:var(--tx-muted); font-size:0.88rem; margin-bottom: 1rem;">
+                Select any layout manager below to visually rearrange the exact same components and see how each manager responds:
+              </p>
+
+              <div class="layout-pill-row">
+                <button class="layout-select-pill active" onclick="switchLayout('flow', this)">FlowLayout</button>
+                <button class="layout-select-pill" onclick="switchLayout('border', this)">BorderLayout</button>
+                <button class="layout-select-pill" onclick="switchLayout('grid', this)">GridLayout</button>
+                <button class="layout-select-pill" onclick="switchLayout('card', this)">CardLayout</button>
+                <button class="layout-select-pill" onclick="switchLayout('gridbag', this)">GridBagLayout</button>
+              </div>
+
+              <!-- Live simulated window -->
+              <div class="layout-frame-simulator">
+                <div class="sim-window-header">
+                  <span id="layout-title-bar">JFrame (FlowLayout)</span>
+                  <span>✕</span>
+                </div>
+                <div class="layout-canvas-window" id="layout-canvas">
+                  <!-- Injected dynamically -->
+                </div>
+              </div>
+
+              <div class="card" style="margin-top:1rem; margin-bottom:0; background:rgba(0, 240, 255, 0.04); border-color:var(--border);">
+                <div style="font-size:0.9rem; line-height:1.6;" id="layout-explanation-text">
+                  <strong>FlowLayout:</strong> Components are placed sequentially from left to right. When window width is insufficient, items wrap to the next row automatically.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subtopic 6-3: Quick Revision -->
+          <div class="sub-content" id="sub-6-3">
+            <div class="card card-gold">
+              <h3 class="card-title gold">Quick Revision: Important Differences</h3>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Concept</th>
+                      <th>Main Purpose</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>Event</code></td>
+                      <td>Represents an action</td>
+                    </tr>
+                    <tr>
+                      <td><code>Event Source</code></td>
+                      <td>Generates an event</td>
+                    </tr>
+                    <tr>
+                      <td><code>Event Class</code></td>
+                      <td>Stores event information</td>
+                    </tr>
+                    <tr>
+                      <td><code>Listener</code></td>
+                      <td>Handles an event</td>
+                    </tr>
+                    <tr>
+                      <td><code>AWT</code></td>
+                      <td>Original Java GUI toolkit</td>
+                    </tr>
+                    <tr>
+                      <td><code>Swing</code></td>
+                      <td>Advanced GUI toolkit</td>
+                    </tr>
+                    <tr>
+                      <td><code>JFrame</code></td>
+                      <td>Main application window</td>
+                    </tr>
+                    <tr>
+                      <td><code>JPanel</code></td>
+                      <td>Groups GUI components</td>
+                    </tr>
+                    <tr>
+                      <td><code>Layout Manager</code></td>
+                      <td>Arranges GUI components</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card card-pu" style="border-left: 4px solid var(--pu); padding: 1.4rem;">
+              <h3 class="card-title pu">Remember the Overall Relationship</h3>
+              <p style="font-size: 1.05rem; font-weight: 500; color: #fff; line-height: 1.6;">
+                <em>"A JFrame contains JPanels, JPanels contain UI components, Layout Managers arrange those components, and Event Listeners handle user interactions with them."</em>
+              </p>
+            </div>
+
+            <div style="text-align: center; margin: 2rem 0 1rem;">
+              <h3 style="color:var(--ok); margin-bottom:0.6rem;">🎉 Syllabus Completed!</h3>
+              <p style="color:var(--tx-muted); margin-bottom:1.2rem;">You have completed all 6 learning topics. Ready to test your mastery?</p>
+              <button class="btn pu lg" onclick="navigate('test')">Proceed to TEST Section ➔</button>
+            </div>
+          </div>
+
+          <div class="topic-footer">
+            <button class="btn sm" onclick="switchTopic('topic-5')">← Previous: Swing Package</button>
+            <button class="btn pu" onclick="navigate('test')">Enter TEST Mode →</button>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       SECTION 2: TEST (Challenge Mode)
+       ========================================== -->
+  <div id="view-test" class="section-view">
+    <!-- Test Lobby / Mode Selection -->
+    <div id="test-lobby">
+      <div class="test-hero">
+        <h2>Security Clearance Challenge</h2>
+        <p>You are stationed in the Java Laboratory Escape Room. Demonstrate mastery across all 6 syllabus modules to unlock the reactor exit.</p>
+        
+        <div class="test-mode-cards">
+          <div class="mode-card" onclick="startTestMode('timed')">
+            <div style="font-size:2rem; margin-bottom:0.5rem;">⏱️</div>
+            <h3>Escape Room (Timed)</h3>
+            <p>5-minute countdown. Each incorrect answer costs a 10-second penalty. Ideal for adrenaline-fueled test practice.</p>
+          </div>
+          <div class="mode-card" onclick="startTestMode('practice')">
+            <div style="font-size:2rem; margin-bottom:0.5rem;">🎓</div>
+            <h3>Practice Mode (Untimed)</h3>
+            <p>No timer pressure. Immediate comprehensive explanations, hints, and step-by-step diagnostic feedback.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Test Quiz Screen -->
+    <div class="test-quiz-shell" id="test-runner" style="display:none;">
+      <div class="test-hud">
+        <div class="hud-pill">Question: <strong id="hud-q-num">1</strong> / <strong id="hud-q-total">18</strong></div>
+        <div class="hud-pill">Score: <strong id="hud-score">0</strong></div>
+        <div class="timer-pill" id="hud-timer">05:00</div>
+      </div>
+
+      <div class="question-card" id="q-card-body">
+        <div class="q-meta">
+          <span class="q-badge" id="q-topic-badge">Event Handling</span>
+          <span class="q-badge" id="q-type-badge">Multiple Choice</span>
+        </div>
+
+        <div class="q-title" id="q-prompt-text">
+          Question prompt goes here...
+        </div>
+
+        <!-- Dynamic Container for Options / Order / Match -->
+        <div id="q-interactive-zone"></div>
+
+        <!-- Feedback & Explanations -->
+        <div class="feedback-box" id="q-feedback-box" style="display:none;"></div>
+
+        <!-- Action Buttons -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:1.5rem; flex-wrap:wrap; gap:0.6rem;">
+          <button class="btn sm pu" id="btn-hint" onclick="revealHint()">💡 Hint</button>
+          <div style="display:flex; gap:0.6rem;">
+            <button class="btn" id="btn-check-ans" onclick="submitAnswer()">Check Answer</button>
+            <button class="btn" id="btn-next-q" onclick="advanceQuestion()" style="display:none;">Next Question ➔</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Final Score / Results Screen -->
+    <div class="results-card" id="test-results" style="display:none;">
+      <div class="score-circle">
+        <div class="pct" id="res-score-pct">100%</div>
+        <div class="label">Score</div>
+      </div>
+
+      <h2 id="res-title" style="color:var(--cy); margin-bottom:0.6rem;">Clearance Granted!</h2>
+      <p id="res-desc" style="color:var(--tx-muted); margin-bottom:1.5rem;">
+        You have successfully bypassed all security checkpoints and demonstrated complete understanding of Java GUI Programming.
+      </p>
+
+      <div style="display:flex; justify-content:center; gap:0.8rem; flex-wrap:wrap;">
+        <button class="btn" onclick="startTestMode('practice')">🔄 Retake Practice</button>
+        <button class="btn pu" onclick="navigate('learn')">📚 Review Course Notes</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 
-<div id="nt" class="modal hid">
-  <div class="box"><h2>Study Notes</h2><div id="ntb"></div><button class="btn" id="nc">Close notes</button></div>
-</div>
-
+<!-- ==========================================
+     JAVASCRIPT APPLICATION LOGIC
+     ========================================== -->
 <script>
-const $=s=>document.querySelector(s),sh=a=>a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);
-const R=[
-{n:'Delegation Event Model',k:'order',
-t:`<p>In Java GUIs a component does not handle its own events; it <b>delegates</b> them.</p>
-<p><b>Event Source</b>: the component that generates the event (for example a JButton).<br><b>Event Object</b>: carries the details of the event (for example an ActionEvent).<br><b>Event Listener</b>: an interface implemented by a class and registered on the source.<br><b>Event Handler</b>: the listener method holding your response code, such as actionPerformed().</p>
-<p>Puzzle: tap the steps in the correct order.</p>`,
-i:['Register a listener on the source: button.addActionListener(listener)','The user acts: the Event Source (the button) is clicked','An Event Object (ActionEvent) is created and sent to the listener','The Event Handler actionPerformed(ActionEvent e) runs your code'],
-h:'Nothing can be delegated until a listener is registered with the source. The handler runs last.',
-e:'In the delegation event model the source does not process events itself; it passes them to registered listeners. You first register the listener with addActionListener(), then a user action makes the source create an ActionEvent object, and finally the listener’s handler method actionPerformed() executes your code.'},
-{n:'Event Classes and Listener Interfaces',k:'match',
-t:`<p>Every event class has a matching listener interface that declares its handler methods.</p>
-<p><b>ActionEvent</b> (button click): actionPerformed()<br><b>MouseEvent</b>: mouseClicked(), mousePressed()...<br><b>KeyEvent</b>: keyPressed(), keyTyped()...<br><b>ItemEvent</b> (checkbox, choice): itemStateChanged()<br><b>WindowEvent</b>: windowClosing(), windowOpened()...<br><b>FocusEvent</b>: focusGained(), focusLost()</p>
-<p>Puzzle: tap an event class, then tap its listener interface.</p>`,
-m:[['ActionEvent','ActionListener'],['MouseEvent','MouseListener'],['KeyEvent','KeyListener'],['ItemEvent','ItemListener'],['WindowEvent','WindowListener'],['FocusEvent','FocusListener']],
-h:'The names follow a pattern: XxxEvent goes with XxxListener.',
-e:'Java names each listener interface after the event it handles, so XxxEvent pairs with XxxListener and is registered using addXxxListener(). ActionEvent covers clicks, MouseEvent and KeyEvent cover input devices, ItemEvent covers selections, WindowEvent covers window state changes and FocusEvent covers gaining or losing focus.'},
-{n:'GUI Components',k:'quiz',
-t:`<p>Swing components usually keep the AWT name with a <b>J</b> prefix.</p>
-<table><tr><th>AWT</th><th>Swing</th></tr><tr><td>Button</td><td>JButton</td></tr><tr><td>Label</td><td>JLabel</td></tr><tr><td>TextField</td><td>JTextField</td></tr><tr><td>TextArea</td><td>JTextArea</td></tr><tr><td>Checkbox</td><td>JCheckBox</td></tr><tr><td>Choice</td><td>JComboBox</td></tr></table>
-<p>Puzzle: pick the right component for each task.</p>`,
-q:[{q:'Swing: let the user pick one item from a drop-down list.',o:['JButton','JComboBox','JTextArea','JLabel'],a:1},
-{q:'Swing: let the user type several lines of text.',o:['JTextField','JLabel','JTextArea','JCheckBox'],a:2},
-{q:'AWT: show fixed, non-editable caption text.',o:['Label','Choice','TextArea','Checkbox'],a:0},
-{q:'Swing: a tick box that can be switched on or off.',o:['JButton','JLabel','JTextField','JCheckBox'],a:3},
-{q:'AWT: a single-line box for typing a name.',o:['TextField','Button','Label','Choice'],a:0}],
-h:'Choice becomes JComboBox in Swing. Fields hold one line, areas hold many.',
-e:'Swing components keep their AWT names with a J prefix: Button becomes JButton, Label becomes JLabel, TextField becomes JTextField, TextArea becomes JTextArea and Checkbox becomes JCheckBox. The main rename is Choice, which becomes JComboBox. A text field is for one line while a text area is for many lines.'},
-{n:'AWT Hierarchy and Swing',k:'quiz',
-t:`<pre>Object
- └ Component
-    ├ Button, Label, Checkbox, Choice, TextComponent
-    │    (TextField and TextArea extend TextComponent)
-    └ Container
-        ├ Panel
-        └ Window
-            ├ Frame
-            └ Dialog</pre>
-<p>All AWT components inherit from <b>Component</b>. <b>Container</b> can hold other components. <b>Swing</b> (javax.swing) builds on AWT: <b>JComponent</b> extends Container. Swing components are <b>lightweight</b> (drawn by Java, pluggable look and feel), while AWT components are <b>heavyweight</b> (they use native OS peers).</p>
-<p>Puzzle: identify the correct class relationships.</p>`,
-q:[{q:'What is the direct superclass of Container?',o:['Component','Object','Window','Panel'],a:0},
-{q:'Which two classes are the direct subclasses of Window?',o:['Panel and Frame','Frame and Dialog','Button and Label'],a:1},
-{q:'TextField inherits from Component through which class?',o:['Panel','Container','JComponent','TextComponent'],a:3},
-{q:'Which class is the base of Swing widgets such as JButton?',o:['Window','JComponent','TextComponent','Frame'],a:1},
-{q:'Which statement about AWT versus Swing is correct?',o:['AWT is lightweight; Swing uses native OS peers','Both are drawn by native OS peers only','Swing is lightweight (drawn by Java); AWT uses native OS peers'],a:2}],
-h:'Read the tree from the top: Object, then Component, then Container, which branches into Panel and Window.',
-e:'Every AWT visual element descends from Component, and Container adds the ability to hold other components. Window is the top-level branch with Frame and Dialog, while TextField and TextArea reach Component through TextComponent. Swing’s JComponent extends Container and is lightweight, meaning Java draws it itself, unlike heavyweight AWT components that rely on native OS peers.'},
-{n:'Frames and Panels',k:'quiz',
-t:`<p><b>JFrame</b> is the top-level window with a title bar, borders and close button. <b>JPanel</b> is a lightweight container that groups components inside a window; its default layout is FlowLayout.</p>
-<pre>JFrame frame = new JFrame("My Application");
-frame.setSize(500, 400);
-frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-JPanel panel = new JPanel();
-panel.add(new JButton("Start"));
-frame.add(panel);
-frame.setVisible(true);</pre>
-<p>Puzzle: choose JFrame or JPanel for each responsibility.</p>`,
-q:[{q:'The top-level window with a title bar and close button.',o:['JFrame','JPanel'],a:0},
-{q:'A lightweight container that groups buttons and other components.',o:['JFrame','JPanel'],a:1},
-{q:'Is told what to do on close with setDefaultCloseOperation().',o:['JFrame','JPanel'],a:0},
-{q:'Uses FlowLayout as its default layout manager.',o:['JFrame','JPanel'],a:1},
-{q:'Needs setVisible(true) before anything appears on screen.',o:['JFrame','JPanel'],a:0}],
-h:'The frame is the window itself. The panel is a tray you place inside it.',
-e:'JFrame is the top-level window: it owns the title bar, size, close behaviour and visibility. JPanel is a lightweight container used to group components such as buttons, and it is then added to the frame. In the example, the panel holds the Start button, the frame holds the panel, and setVisible(true) finally displays the window.'},
-{n:'Layout Managers',k:'match',
-t:`<p>A layout manager decides how components are sized and positioned in a container.</p>
-<p><b>FlowLayout</b>: left to right, wraps to a new row.<br><b>BorderLayout</b>: NORTH, SOUTH, EAST, WEST and CENTER regions.<br><b>GridLayout</b>: equal-sized cells in rows and columns.<br><b>CardLayout</b>: a stack of components, one visible at a time.<br><b>GridBagLayout</b>: flexible grid where components can span cells (set with GridBagConstraints).</p>
-<p>Puzzle: tap a layout manager, then tap its best use case.</p>`,
-m:[['FlowLayout','A simple row of buttons that wraps like text'],['BorderLayout','Main window with header, footer, sidebar and a central area'],['GridLayout','Calculator keypad of equal-sized cells'],['CardLayout','Wizard screens where only one panel shows at a time'],['GridBagLayout','Complex form where components span rows and columns']],
-h:'Think: equal cells, five regions, one-at-a-time, wrapping row, or spanning cells.',
-e:'FlowLayout arranges components in a row and wraps them, BorderLayout splits a container into five regions and GridLayout makes equal cells like a keypad. CardLayout shows one panel at a time, which suits wizards, and GridBagLayout is the most flexible, letting components span several rows and columns using GridBagConstraints.'}
+/* =========================================================
+   1. GLOBAL STATE & NAVIGATION
+   ========================================================= */
+const state = {
+  currentView: 'home',
+  currentTopic: 'topic-1',
+  topicProgress: { 'topic-1': true },
+  test: {
+    mode: 'practice', // 'timed' or 'practice'
+    qIndex: 0,
+    score: 0,
+    timerSeconds: 300,
+    timerInterval: null,
+    selectedOption: null,
+    isAnswered: false,
+    orderAnswer: [],
+    matchSelections: { left: null, right: null, matches: {} }
+  }
+};
+
+function navigate(viewName) {
+  state.currentView = viewName;
+  document.querySelectorAll('.section-view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
+
+  const viewEl = document.getElementById('view-' + viewName);
+  if (viewEl) viewEl.classList.add('active');
+
+  const pillEl = document.getElementById('pill-' + viewName);
+  if (pillEl) pillEl.classList.add('active');
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  if (viewName === 'learn') {
+    switchTopic(state.currentTopic);
+  }
+}
+
+function switchTopic(topicId) {
+  state.currentTopic = topicId;
+  state.topicProgress[topicId] = true;
+
+  document.querySelectorAll('.topic-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.learn-nav-btn').forEach(b => b.classList.remove('active'));
+
+  const panel = document.getElementById(topicId);
+  if (panel) panel.classList.add('active');
+
+  const navBtn = document.querySelector(`.learn-nav-btn[data-topic="${topicId}"]`);
+  if (navBtn) {
+    navBtn.classList.add('active');
+    navBtn.classList.add('completed');
+  }
+
+  // Update progress indicators
+  const topicIndex = parseInt(topicId.replace('topic-', ''));
+  for (let i = 1; i <= 6; i++) {
+    const seg = document.getElementById('seg-' + i);
+    if (seg) {
+      seg.className = 'learn-progress-seg';
+      if (i < topicIndex || state.topicProgress['topic-' + i]) seg.classList.add('done');
+      if (i === topicIndex) seg.classList.add('active');
+    }
+  }
+
+  // Initialize specific topic interactive widgets
+  if (topicId === 'topic-1') initTopic1();
+  if (topicId === 'topic-3') initTopic3();
+  if (topicId === 'topic-4') inspectTreeNode('Component');
+  if (topicId === 'topic-6') switchLayout('flow', document.querySelector('.layout-select-pill'));
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function switchSub(topicId, subId, buttonEl) {
+  const panel = document.getElementById(topicId);
+  if (!panel) return;
+
+  panel.querySelectorAll('.sub-pill').forEach(p => p.classList.remove('active'));
+  panel.querySelectorAll('.sub-content').forEach(c => c.classList.remove('active'));
+
+  buttonEl.classList.add('active');
+  const targetSub = document.getElementById(subId);
+  if (targetSub) targetSub.classList.add('active');
+}
+
+/* =========================================================
+   2. TOPIC 1 INTERACTIVE LOGIC
+   ========================================================= */
+let demTimer = null;
+function runDelegationDemo() {
+  resetDelegationDemo();
+  const btn = document.getElementById('sim-delegation-btn');
+  const label = document.getElementById('sim-app-label');
+  btn.classList.add('pressed');
+
+  // Step 1: Registered Listener
+  highlightDemStep(1, true);
+  label.textContent = "Step 1: Listener registered. User clicked button!";
+
+  demTimer = setTimeout(() => {
+    btn.classList.remove('pressed');
+    highlightDemStep(2, true);
+    label.textContent = "Step 2: JButton generates an event (Action performed).";
+
+    setTimeout(() => {
+      highlightDemStep(3, true);
+      label.textContent = "Step 3: ActionEvent object created with event metadata.";
+
+      setTimeout(() => {
+        highlightDemStep(4, true);
+        label.textContent = "Step 4: Event delivered to ActionListener.";
+
+        setTimeout(() => {
+          highlightDemStep(5, true);
+          label.textContent = "Step 5: listener.actionPerformed(e) executes!";
+
+          setTimeout(() => {
+            highlightDemStep(6, true);
+            label.textContent = "Step 6: [SUCCESS] Application updated its state!";
+          }, 600);
+        }, 600);
+      }, 600);
+    }, 600);
+  }, 400);
+}
+
+function highlightDemStep(stepNum, isLit) {
+  const node = document.getElementById('dem-stage-' + stepNum);
+  if (node) {
+    node.classList.add('active-step');
+    node.classList.add('completed-step');
+  }
+  if (stepNum > 1) {
+    const conn = document.getElementById('dem-conn-' + (stepNum - 1));
+    if (conn) conn.classList.add('lit');
+  }
+}
+
+function resetDelegationDemo() {
+  if (demTimer) clearTimeout(demTimer);
+  for (let i = 1; i <= 6; i++) {
+    const node = document.getElementById('dem-stage-' + i);
+    if (node) node.className = 'flow-node';
+    const conn = document.getElementById('dem-conn-' + i);
+    if (conn) conn.className = 'flow-connector';
+  }
+  const label = document.getElementById('sim-app-label');
+  if (label) label.textContent = "Waiting for user interaction...";
+  const btn = document.getElementById('sim-delegation-btn');
+  if (btn) btn.classList.remove('pressed');
+}
+
+// Event Inspector Data
+const eventDetailsMap = {
+  action: {
+    title: 'ActionEvent',
+    pkg: 'java.awt.event.ActionEvent',
+    listener: 'ActionListener (actionPerformed)',
+    trigger: 'Generated when a button is clicked or a menu item is selected.',
+    payload: 'Stores action command string, modifiers (CTRL, SHIFT), and event source reference.'
+  },
+  mouse: {
+    title: 'MouseEvent',
+    pkg: 'java.awt.event.MouseEvent',
+    listener: 'MouseListener (mouseClicked, mousePressed, etc.)',
+    trigger: 'Generated on mouse click, movement, drag, enter/exit.',
+    payload: 'Stores coordinate values (getX, getY), button number, and click count (single vs double click).'
+  },
+  key: {
+    title: 'KeyEvent',
+    pkg: 'java.awt.event.KeyEvent',
+    listener: 'KeyListener (keyPressed, keyReleased, keyTyped)',
+    trigger: 'Generated on keyboard actions (press, release, typed).',
+    payload: 'Stores virtual key code (e.g., VK_ENTER), Unicode character, and modifier keys.'
+  },
+  window: {
+    title: 'WindowEvent',
+    pkg: 'java.awt.event.WindowEvent',
+    listener: 'WindowListener (windowOpened, windowClosing, etc.)',
+    trigger: 'Generated when window opens, closes, minimizes, or maximizes.',
+    payload: 'Stores previous and new window state representations.'
+  },
+  item: {
+    title: 'ItemEvent',
+    pkg: 'java.awt.event.ItemEvent',
+    listener: 'ItemListener (itemStateChanged)',
+    trigger: 'Generated when checkbox or choice selection changes.',
+    payload: 'Stores item reference and state change constant (SELECTED / DESELECTED).'
+  },
+  focus: {
+    title: 'FocusEvent',
+    pkg: 'java.awt.event.FocusEvent',
+    listener: 'FocusListener (focusGained, focusLost)',
+    trigger: 'Generated when component gains or loses keyboard input focus.',
+    payload: 'Stores whether focus transfer is permanent or temporary.'
+  }
+};
+
+function inspectEvent(type, cardEl) {
+  document.querySelectorAll('.event-test-card').forEach(c => c.classList.remove('active'));
+  if (cardEl) cardEl.classList.add('active');
+
+  const data = eventDetailsMap[type];
+  const box = document.getElementById('event-inspect-display');
+  box.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; flex-wrap:wrap; gap:0.4rem;">
+      <strong style="color:var(--cy); font-size:1.05rem;">Class: ${data.title}</strong>
+      <span class="code-tag">${data.pkg}</span>
+    </div>
+    <p><strong>Trigger:</strong> ${data.trigger}</p>
+    <p><strong>Listener Interface:</strong> <code>${data.listener}</code></p>
+    <p><strong>Data Encapsulated:</strong> ${data.payload}</p>
+  `;
+}
+
+// Matching Game Data for Topic 1
+const matchPairsTopic1 = [
+  { id: '1', left: 'ActionEvent', right: 'ActionListener' },
+  { id: '2', left: 'MouseEvent', right: 'MouseListener' },
+  { id: '3', left: 'KeyEvent', right: 'KeyListener' },
+  { id: '4', left: 'WindowEvent', right: 'WindowListener' },
+  { id: '5', left: 'ItemEvent', right: 'ItemListener' },
+  { id: '6', left: 'FocusEvent', right: 'FocusListener' }
 ];
-let room,t,iv,S,hints=0;
-const show=id=>document.querySelectorAll('.scr').forEach(e=>e.classList.toggle('hid',e.id!=id));
-const mmss=()=>String(Math.floor(Math.max(t,0)/60)).padStart(2,'0')+':'+String(Math.max(t,0)%60).padStart(2,'0');
-function fmt(){$('#tm').textContent=mmss();$('#tm').classList.toggle('low',t<=60)}
-function fb(c,h){const f=$('#fb');f.className='fb '+(c||'hid');f.innerHTML=h||''}
-function start(){room=0;t=300;hints=0;clearInterval(iv);fmt();iv=setInterval(()=>{t--;fmt();if(t<=0)lose()},1000);show('s1');load()}
-function lose(){clearInterval(iv);t=0;fmt();show('s3')}
-function win(){clearInterval(iv);$('#ws').textContent='Time remaining: '+mmss()+'. Hints used: '+hints+'.';show('s2')}
-function init(){const r=R[room];S={chk:false,ok:false};
-if(r.k=='order'){S.p=[];S.pool=sh(r.i.map((_,i)=>i))}
-else if(r.k=='match'){S.as=r.m.map(()=>-1);S.ro=sh(r.m.map((_,i)=>i));S.sel=0}
-else S.a=r.q.map(()=>-1)}
-function load(){const r=R[room];init();$('#rt').textContent='Room '+(room+1)+' of 6: '+r.n;$('#teach').innerHTML=r.t;
-$('#prog').innerHTML=R.map((_,i)=>'<i class="'+(i<room?'d':i==room?'c':'')+'"></i>').join('');
-fb();$('#ck').classList.remove('hid');$('#nx').classList.add('hid');draw()}
-function ready(){const r=R[room];return r.k=='order'?S.p.length==r.i.length:r.k=='match'?!S.as.includes(-1):!S.a.includes(-1)}
-function draw(){const r=R[room];let h='';
-if(r.k=='order'){
-h='<p class="lbl">Your sequence (tap a step to remove it)</p><ol class="seq">'+(S.p.map((x,i)=>'<li><button class="opt'+(S.chk?(x==i?' ok':' bad'):'')+'" data-k="rm" data-i="'+i+'">'+r.i[x]+'</button></li>').join('')||'<li class="emp">(empty)</li>')+'</ol><p class="lbl">Available steps</p><div class="opts">'+S.pool.filter(x=>!S.p.includes(x)).map(x=>'<button class="opt" data-k="add" data-i="'+x+'">'+r.i[x]+'</button>').join('')+'</div>'}
-else if(r.k=='match'){
-h='<div class="mt"><div>'+r.m.map((m,i)=>'<button class="opt'+(S.sel==i?' sel':'')+(S.chk?(S.as[i]==i?' ok':' bad'):'')+'" data-k="l" data-i="'+i+'">'+m[0]+'<em>'+(S.as[i]>=0?'matched: '+r.m[S.as[i]][1]:'tap, then pick a match')+'</em></button>').join('')+'</div><div>'+S.ro.map(j=>'<button class="opt" data-k="r" data-i="'+j+'"'+(S.as.includes(j)?' disabled':'')+'>'+r.m[j][1]+'</button>').join('')+'</div></div>'}
-else{
-h=r.q.map((q,qi)=>'<div class="q"><p>'+(qi+1)+'. '+q.q+'</p><div class="opts">'+q.o.map((o,oi)=>'<button class="opt'+(S.a[qi]==oi?' sel':'')+(S.chk&&S.a[qi]==oi?(oi==q.a?' ok':' bad'):'')+'" data-k="q" data-q="'+qi+'" data-i="'+oi+'">'+o+'</button>').join('')+'</div></div>').join('')}
-$('#pz').innerHTML=h;$('#ck').disabled=!ready()||S.chk}
-$('#pz').onclick=e=>{const b=e.target.closest('button');if(!b||S.chk||b.disabled)return;const k=b.dataset.k,i=+b.dataset.i;
-if(k=='add')S.p.push(i);else if(k=='rm')S.p.splice(i,1);
-else if(k=='l'){if(S.as[i]>=0)S.as[i]=-1;S.sel=i}
-else if(k=='r'){if(S.sel<0)return;S.as[S.sel]=i;S.sel=S.as.findIndex(v=>v<0)}
-else if(k=='q')S.a[+b.dataset.q]=i;
-draw()};
-$('#ck').onclick=()=>{const r=R[room];if(!ready()||S.chk)return;
-S.ok=r.k=='order'?S.p.every((v,i)=>v==i):r.k=='match'?S.as.every((v,i)=>v==i):S.a.every((v,i)=>v==r.q[i].a);
-S.chk=true;draw();
-fb(S.ok?'good':'bad',(S.ok?'ACCESS GRANTED':'ACCESS DENIED. 10 seconds lost.')+'<p>'+r.e+'</p>');
-$('#ck').classList.add('hid');const n=$('#nx');n.classList.remove('hid');n.textContent=S.ok?(room==5?'Unlock the exit':'Next room'):'Try again';
-if(!S.ok){t-=10;fmt();if(t<=0)lose()}};
-$('#nx').onclick=()=>{if(S.ok){if(room==5)win();else{room++;load()}}else load()};
-$('#hb').onclick=()=>{if(S.chk)return;hints++;fb('hint','Hint: '+R[room].h)};
-const notes=()=>{$('#ntb').innerHTML=R.map((r,i)=>'<h2 style="margin-top:1rem">'+(i+1)+'. '+r.n+'</h2>'+r.t.replace(/<p>Puzzle:[^]*?<\/p>/,'')).join('');$('#nt').classList.remove('hid')};
-$('#nb').onclick=$('#nb2').onclick=notes;
-$('#nc').onclick=()=>$('#nt').classList.add('hid');
-$('#go').onclick=start;
-document.querySelectorAll('[data-restart]').forEach(b=>b.onclick=start);
+
+let selMatchLeft = null;
+
+function initTopic1() {
+  inspectEvent('action', document.querySelector('.event-test-card'));
+  resetTopic1Match();
+}
+
+function resetTopic1Match() {
+  selMatchLeft = null;
+  const leftCol = document.getElementById('match-col-left');
+  const rightCol = document.getElementById('match-col-right');
+  const status = document.getElementById('match-status');
+  if (!leftCol || !rightCol) return;
+
+  status.textContent = "Select an Event Class on the left to begin.";
+  status.style.color = "var(--tx-muted)";
+
+  // Render left
+  leftCol.innerHTML = matchPairsTopic1.map(p => `
+    <div class="match-item" data-id="${p.id}" onclick="onSelectMatchLeft(this, '${p.id}')">
+      ${p.left}
+    </div>
+  `).join('');
+
+  // Render shuffled right
+  const shuffledRight = [...matchPairsTopic1].sort(() => Math.random() - 0.5);
+  rightCol.innerHTML = shuffledRight.map(p => `
+    <div class="match-item" data-id="${p.id}" onclick="onSelectMatchRight(this, '${p.id}')">
+      ${p.right}
+    </div>
+  `).join('');
+}
+
+function onSelectMatchLeft(el, id) {
+  if (el.classList.contains('matched')) return;
+  document.querySelectorAll('#match-col-left .match-item').forEach(i => i.classList.remove('selected'));
+  el.classList.add('selected');
+  selMatchLeft = { el, id };
+  document.getElementById('match-status').textContent = `Now click the listener interface matching "${el.textContent.trim()}".`;
+}
+
+function onSelectMatchRight(el, id) {
+  if (el.classList.contains('matched') || !selMatchLeft) return;
+
+  if (selMatchLeft.id === id) {
+    // Matched
+    el.classList.add('matched');
+    selMatchLeft.el.classList.add('matched');
+    selMatchLeft.el.classList.remove('selected');
+    selMatchLeft = null;
+
+    const remaining = document.querySelectorAll('#match-col-left .match-item:not(.matched)').length;
+    if (remaining === 0) {
+      document.getElementById('match-status').textContent = "🎉 Excellent! All pairs correctly matched.";
+      document.getElementById('match-status').style.color = "var(--ok)";
+    } else {
+      document.getElementById('match-status').textContent = `Correct! ${remaining} pairs remaining.`;
+      document.getElementById('match-status').style.color = "var(--ok)";
+    }
+  } else {
+    // Error shake
+    el.classList.add('error');
+    selMatchLeft.el.classList.add('error');
+    document.getElementById('match-status').textContent = "Incorrect match. Try again!";
+    document.getElementById('match-status').style.color = "var(--bd)";
+    setTimeout(() => {
+      el.classList.remove('error');
+      if (selMatchLeft) selMatchLeft.el.classList.remove('error');
+    }, 400);
+  }
+}
+
+/* =========================================================
+   3. TOPIC 3 COMPONENT BUILDER DATA
+   ========================================================= */
+const componentGallery = {
+  button: {
+    name: 'JButton (AWT: Button)',
+    purpose: 'Performs an action when clicked.',
+    render: `<button class="java-btn" onclick="alert('JButton ActionEvent handled!')">[ JButton: Submit Data ]</button>`,
+    code: `<span class="cl">JButton</span> button = <span class="kw">new</span> <span class="cl">JButton</span>(<span class="st">"Submit Data"</span>);\nbutton.<span class="fn">addActionListener</span>(e -> {\n    System.out.<span class="fn">println</span>(<span class="st">"Button clicked!"</span>);\n});\npanel.<span class="fn">add</span>(button);`
+  },
+  label: {
+    name: 'JLabel (AWT: Label)',
+    purpose: 'Displays text.',
+    render: `<span class="java-label"><strong>User Status:</strong> Logged in as Student</span>`,
+    code: `<span class="cl">JLabel</span> label = <span class="kw">new</span> <span class="cl">JLabel</span>(<span class="st">"User Status: Logged in as Student"</span>);\npanel.<span class="fn">add</span>(label);`
+  },
+  textfield: {
+    name: 'JTextField (AWT: TextField)',
+    purpose: 'Accepts single-line input.',
+    render: `<div style="display:flex;align-items:center;gap:0.5rem;"><span class="java-label">Enter Roll No:</span><input type="text" class="java-input" placeholder="e.g., 2024CS01" style="width:160px;"></div>`,
+    code: `<span class="cl">JTextField</span> textField = <span class="kw">new</span> <span class="cl">JTextField</span>(15);\n<span class="cl">String</span> text = textField.<span class="fn">getText</span>();\npanel.<span class="fn">add</span>(textField);`
+  },
+  textarea: {
+    name: 'JTextArea (AWT: TextArea)',
+    purpose: 'Accepts multiple-line input.',
+    render: `<textarea class="java-input" rows="3" style="width:240px;" placeholder="Type multi-line course feedback here..."></textarea>`,
+    code: `<span class="cl">JTextArea</span> textArea = <span class="kw">new</span> <span class="cl">JTextArea</span>(5, 20);\ntextArea.<span class="fn">append</span>(<span class="st">"Line 1\\nLine 2"</span>);\npanel.<span class="fn">add</span>(<span class="kw">new</span> <span class="cl">JScrollPane</span>(textArea));`
+  },
+  checkbox: {
+    name: 'JCheckBox (AWT: Checkbox)',
+    purpose: 'Allows selecting an option.',
+    render: `<div style="display:flex;flex-direction:column;gap:0.3rem;"><label class="java-label"><input type="checkbox" checked> Accept Terms &amp; Conditions</label><label class="java-label"><input type="checkbox"> Subscribe to updates</label></div>`,
+    code: `<span class="cl">JCheckBox</span> checkBox = <span class="kw">new</span> <span class="cl">JCheckBox</span>(<span class="st">"Accept Terms"</span>);\ncheckBox.<span class="fn">addItemListener</span>(e -> {\n    <span class="kw">boolean</span> checked = (e.<span class="fn">getStateChange</span>() == <span class="cl">ItemEvent</span>.SELECTED);\n});\npanel.<span class="fn">add</span>(checkBox);`
+  },
+  radio: {
+    name: 'JRadioButton (with ButtonGroup)',
+    purpose: 'Allows selecting one option from a group.',
+    render: `<div style="display:flex;gap:0.8rem;"><label class="java-label"><input type="radio" name="plan" checked> Semester 5</label><label class="java-label"><input type="radio" name="plan"> Semester 6</label></div>`,
+    code: `<span class="cl">JRadioButton</span> r1 = <span class="kw">new</span> <span class="cl">JRadioButton</span>(<span class="st">"Semester 5"</span>);\n<span class="cl">JRadioButton</span> r2 = <span class="kw">new</span> <span class="cl">JRadioButton</span>(<span class="st">"Semester 6"</span>);\n<span class="cl">ButtonGroup</span> group = <span class="kw">new</span> <span class="cl">ButtonGroup</span>();\ngroup.<span class="fn">add</span>(r1); group.<span class="fn">add</span>(r2);\npanel.<span class="fn">add</span>(r1); panel.<span class="fn">add</span>(r2);`
+  },
+  choice: {
+    name: 'JComboBox (AWT: Choice)',
+    purpose: 'Provides a drop-down list.',
+    render: `<div style="display:flex;align-items:center;gap:0.5rem;"><span class="java-label">Branch:</span><select class="java-input"><option>Computer Science</option><option>Information Technology</option><option>Electronics</option></select></div>`,
+    code: `<span class="cl">String</span>[] courses = { <span class="st">"CSE"</span>, <span class="st">"IT"</span>, <span class="st">"ECE"</span> };\n<span class="cl">JComboBox</span>&lt;<span class="cl">String</span>&gt; combo = <span class="kw">new</span> <span class="cl">JComboBox</span>&lt;&gt;(courses);\npanel.<span class="fn">add</span>(combo);`
+  },
+  list: {
+    name: 'JList (AWT: List)',
+    purpose: 'Displays a list of selectable items.',
+    render: `<select class="java-input" size="3" style="width:180px;"><option selected>1. Delegation Model</option><option>2. AWT Hierarchy</option><option>3. Layout Managers</option></select>`,
+    code: `<span class="cl">String</span>[] items = { <span class="st">"Item 1"</span>, <span class="st">"Item 2"</span>, <span class="st">"Item 3"</span> };\n<span class="cl">JList</span>&lt;<span class="cl">String</span>&gt; list = <span class="kw">new</span> <span class="cl">JList</span>&lt;&gt;(items);\npanel.<span class="fn">add</span>(<span class="kw">new</span> <span class="cl">JScrollPane</span>(list));`
+  }
+};
+
+function selectComponent(key, buttonEl) {
+  document.querySelectorAll('.palette-item').forEach(b => b.classList.remove('active'));
+  if (buttonEl) buttonEl.classList.add('active');
+
+  const data = componentGallery[key];
+  document.getElementById('comp-name-disp').textContent = data.name;
+  document.getElementById('comp-purpose-disp').textContent = data.purpose;
+  document.getElementById('comp-render-box').innerHTML = data.render;
+  document.getElementById('comp-code-disp').innerHTML = data.code;
+}
+
+function initTopic3() {
+  selectComponent('button', document.querySelector('.palette-item'));
+}
+
+/* =========================================================
+   4. TOPIC 4 AWT HIERARCHY TREE LOGIC
+   ========================================================= */
+const treeNodeData = {
+  Object: "The root superclass of every class in the Java runtime.",
+  Component: "Base class for visible GUI elements. Encapsulates bounds, foreground/background color, fonts, repainting, and event firing.",
+  Container: "A specialized Component that can hold other components and maintains an associated LayoutManager.",
+  Panel: "A container used to group components. Does not have its own title bar or borders (FlowLayout by default).",
+  Window: "A top-level container with no title bar, border, or menubar. Base class for Frame and Dialog.",
+  Frame: "A top-level window with a title bar, borders, maximize/minimize controls, and closing support (BorderLayout by default).",
+  Dialog: "A pop-up or dialog window typically used for notifications, error alerts, or modal input prompts.",
+  JComponent: "The root class for almost all Swing components (javax.swing). Extends Container; lightweight and painted by Java.",
+  Label: "Passive non-editable text component.",
+  Button: "Push button component that fires ActionEvent when clicked.",
+  TextField: "Single-line editable text component.",
+  TextArea: "Multi-line editable text component with scrollable content.",
+  Checkbox: "Component with true/false toggle state.",
+  Choice: "Drop-down selection list (equivalent to JComboBox in Swing).",
+  List: "Displays multiple selectable items in a scrollable list format.",
+  MenuComponent: "Root class for all menu-related items in AWT. Extends Object directly (not Component).",
+  MenuBar: "Menu bar strip attached to a Frame's top region.",
+  MenuItem: "Selectable item inside an AWT menu, generating ActionEvent upon click."
+};
+
+function inspectTreeNode(nodeName) {
+  document.querySelectorAll('.tree-node-card').forEach(n => {
+    n.classList.remove('selected');
+    if (n.textContent.trim() === nodeName) n.classList.add('selected');
+  });
+
+  const titleEl = document.getElementById('node-name-disp');
+  const descEl = document.getElementById('node-desc-disp');
+  if (titleEl && descEl) {
+    titleEl.textContent = nodeName;
+    descEl.textContent = treeNodeData[nodeName] || "Class in Java GUI AWT Hierarchy.";
+  }
+}
+
+/* =========================================================
+   5. TOPIC 5 SWING SIMULATOR
+   ========================================================= */
+function triggerSwingDemoAction() {
+  const name = document.getElementById('swing-demo-name').value;
+  const sound = document.getElementById('swing-demo-check').checked;
+  const consoleEl = document.getElementById('swing-output-console');
+  consoleEl.innerHTML = `
+    <span style="color:#16a34a;">[ActionEvent DISPATCHED]</span><br>
+    actionPerformed() -> Name: "${name}" | Sounds: ${sound ? 'Enabled' : 'Disabled'}
+  `;
+}
+
+function clearSwingDemoAction() {
+  document.getElementById('swing-demo-name').value = '';
+  document.getElementById('swing-demo-check').checked = false;
+  document.getElementById('swing-output-console').textContent = 'Fields reset. Waiting for user event...';
+}
+
+/* =========================================================
+   6. TOPIC 6 LAYOUT MANAGER INTERACTIVE LOGIC
+   ========================================================= */
+const layoutConfigs = {
+  flow: {
+    title: 'JFrame (FlowLayout)',
+    expl: '<strong>FlowLayout:</strong> Arranges components sequentially from left to right. Moves components to the next row when horizontal space is insufficient. Default layout for <code>JPanel</code>.',
+    render: () => `
+      <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; align-items:center; min-height:220px;">
+        <div class="layout-cell cell-1">Button 1</div>
+        <div class="layout-cell cell-2">Button 2</div>
+        <div class="layout-cell cell-3">Label: Active</div>
+        <div class="layout-cell cell-4">TextField</div>
+        <div class="layout-cell cell-5">Checkbox</div>
+      </div>
+    `
+  },
+  border: {
+    title: 'JFrame (BorderLayout)',
+    expl: '<strong>BorderLayout:</strong> Divides the container into five regions: <strong>North, South, East, West, and Center</strong>. Center receives all remaining space. Default layout for <code>JFrame</code>.',
+    render: () => `
+      <div style="display:grid; grid-template-rows: auto 1fr auto; grid-template-columns: 90px 1fr 90px; gap:6px; min-height:220px; height:100%;">
+        <div class="layout-cell cell-1" style="grid-column: 1 / -1;">BorderLayout.NORTH (Header)</div>
+        <div class="layout-cell cell-2">WEST</div>
+        <div class="layout-cell cell-3" style="font-size:0.95rem;">CENTER (Expands to fill all leftover space)</div>
+        <div class="layout-cell cell-4">EAST</div>
+        <div class="layout-cell cell-5" style="grid-column: 1 / -1;">BorderLayout.SOUTH (Footer / Status)</div>
+      </div>
+    `
+  },
+  grid: {
+    title: 'JFrame (GridLayout: 2 rows, 3 cols)',
+    expl: '<strong>GridLayout:</strong> Arranges components in a rectangular grid of rows and columns, with <strong>equal-sized cells</strong>. Each cell resizes uniformly with the window.',
+    render: () => `
+      <div style="display:grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr); gap:8px; min-height:220px;">
+        <div class="layout-cell cell-1">Cell (0,0)</div>
+        <div class="layout-cell cell-2">Cell (0,1)</div>
+        <div class="layout-cell cell-3">Cell (0,2)</div>
+        <div class="layout-cell cell-4">Cell (1,0)</div>
+        <div class="layout-cell cell-5">Cell (1,1)</div>
+        <div class="layout-cell cell-1" style="opacity:0.8;">Cell (1,2)</div>
+      </div>
+    `
+  },
+  card: {
+    title: 'JFrame (CardLayout: Wizard Screens)',
+    expl: '<strong>CardLayout:</strong> Arranges components like a stack of cards, displaying <strong>only one card at a time</strong>. Frequently used for tabbed views or multi-step setup wizards.',
+    render: () => {
+      const cardContents = [
+        { title: 'Card #1: User Registration', desc: 'Step 1: Enter basic profile details. Only this panel is active.' },
+        { title: 'Card #2: Select Electives', desc: 'Step 2: Choose course modules. CardLayout hides Card #1 and displays Card #2.' },
+        { title: 'Card #3: Confirmation', desc: 'Step 3: Review and click Finish. The container only shows one card at any instant.' }
+      ];
+      const cur = window.currentCardIndex || 0;
+      const c = cardContents[cur];
+      return `
+        <div style="position:relative; min-height:220px; display:flex; flex-direction:column; justify-content:center; align-items:center; background:#f8fafc; border:2px dashed #94a3b8; border-radius:4px; padding:1.5rem; text-align:center;">
+          <div style="font-weight:700; color:#0f172a; margin-bottom:0.4rem; font-size:1.1rem;">${c.title}</div>
+          <p style="color:#475569; font-size:0.88rem; max-width:380px; margin-bottom:1rem;">${c.desc}</p>
+          <div style="display:flex; gap:0.6rem;">
+            <button class="java-btn" onclick="flipCard(-1)" ${cur === 0 ? 'disabled' : ''}>← Previous Card</button>
+            <button class="java-btn" onclick="flipCard(1)" ${cur === cardContents.length - 1 ? 'disabled' : ''}>Next Card →</button>
+          </div>
+          <div style="font-size:0.75rem; color:#64748b; margin-top:0.8rem; font-family:var(--font-mono);">Card ${cur + 1} of ${cardContents.length} active</div>
+        </div>
+      `;
+    }
+  },
+  gridbag: {
+    title: 'JFrame (GridBagLayout: Flexible Grid)',
+    expl: '<strong>GridBagLayout:</strong> The most flexible layout manager in Java. Components can occupy different sizes and <strong>span multiple cells</strong> vertically or horizontally using <code>GridBagConstraints</code>.',
+    render: () => `
+      <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 40px 100px 40px; gap:8px; min-height:220px;">
+        <div class="layout-cell cell-1" style="grid-column: 1 / span 3;">Title Banner (gridwidth = 3)</div>
+        <div class="layout-cell cell-2" style="grid-row: 2 / span 1;">Sidebar</div>
+        <div class="layout-cell cell-3" style="grid-column: 2 / span 2;">Content Body (gridwidth = 2)</div>
+        <div class="layout-cell cell-4" style="grid-column: 1 / span 2;">Wide Input (gridwidth = 2)</div>
+        <div class="layout-cell cell-5">Submit</div>
+      </div>
+    `
+  }
+};
+
+window.currentCardIndex = 0;
+function flipCard(delta) {
+  window.currentCardIndex = Math.max(0, Math.min(2, (window.currentCardIndex || 0) + delta));
+  const canvas = document.getElementById('layout-canvas');
+  if (canvas && layoutConfigs.card) {
+    canvas.innerHTML = layoutConfigs.card.render();
+  }
+}
+
+function switchLayout(layoutKey, pillEl) {
+  if (layoutKey === 'card') window.currentCardIndex = 0;
+  document.querySelectorAll('.layout-select-pill').forEach(p => p.classList.remove('active'));
+  if (pillEl) pillEl.classList.add('active');
+
+  const cfg = layoutConfigs[layoutKey];
+  document.getElementById('layout-title-bar').textContent = cfg.title;
+  document.getElementById('layout-explanation-text').innerHTML = cfg.expl;
+  document.getElementById('layout-canvas').innerHTML = cfg.render();
+}
+
+/* =========================================================
+   7. TEST SECTION DATA & LOGIC
+   ========================================================= */
+const testBank = [
+  {
+    topic: 'Event Handling',
+    type: 'mc',
+    prompt: 'What is the responsibility of an Event Source in the Java Delegation Event Model?',
+    opts: [
+      'It executes the final business logic to respond to the event',
+      'It generates the event and delegates handling to registered listeners',
+      'It displays dialog popups whenever a keystroke occurs',
+      'It manages the sizing and layout positioning of window borders'
+    ],
+    ans: 1,
+    hint: 'Think about what a JButton does when clicked: it generates an ActionEvent and notifies listeners.',
+    expl: 'An Event Source is the component that generates an event (e.g., JButton). In the delegation model, it does not handle the event itself, but delegates it to registered listeners.'
+  },
+  {
+    topic: 'Delegation Event Model',
+    type: 'order',
+    prompt: 'Arrange the 4 steps of the Delegation Event Model in their exact working order:',
+    items: [
+      'The registered listener receives the event and executes its handler method.',
+      'A listener registers itself with an event source.',
+      'The source generates an event object.',
+      'The user performs an action.'
+    ],
+    ans: [1, 3, 2, 0], // Correct permutation: Register -> User action -> Source generates -> Listener receives
+    hint: 'A listener must subscribe first before any user interaction can be captured.',
+    expl: 'Official syllabus order: 1. A listener registers itself with an event source. 2. The user performs an action. 3. The source generates an event object. 4. The registered listener receives the event and executes its handler method.'
+  },
+  {
+    topic: 'Event Classes',
+    type: 'mc',
+    prompt: 'Which event class is generated when a user selects an option in a Checkbox or Choice component?',
+    opts: [
+      'ActionEvent',
+      'ItemEvent',
+      'ComponentEvent',
+      'AdjustmentEvent'
+    ],
+    ans: 1,
+    hint: 'According to the syllabus table: "ItemEvent — Checkbox or choice selection".',
+    expl: 'ItemEvent represents selection changes in checkboxes, choice dropdowns, or list items. Handled via ItemListener.'
+  },
+  {
+    topic: 'Listener Interfaces',
+    type: 'mc',
+    prompt: 'Which method must be implemented by a class implementing the ActionListener interface?',
+    opts: [
+      'public void itemStateChanged(ItemEvent e)',
+      'public void actionPerformed(ActionEvent e)',
+      'public void mouseClicked(MouseEvent e)',
+      'public void windowClosing(WindowEvent e)'
+    ],
+    ans: 1,
+    hint: 'The method starts with "action" and accepts an ActionEvent.',
+    expl: 'ActionListener defines a single method: actionPerformed(ActionEvent e), called whenever an action event (such as a button click or menu selection) occurs.'
+  },
+  {
+    topic: 'AWT Hierarchy',
+    type: 'mc',
+    prompt: 'What is the direct superclass of Container in the AWT class hierarchy?',
+    opts: [
+      'Window',
+      'Object',
+      'Component',
+      'Panel'
+    ],
+    ans: 2,
+    hint: 'Container inherits visual traits from the base class for visible elements.',
+    expl: 'In the AWT hierarchy, Object is the root, followed by Component, from which Container directly inherits.'
+  },
+  {
+    topic: 'AWT Hierarchy',
+    type: 'mc',
+    prompt: 'Which two classes are the direct subclasses of Window in AWT?',
+    opts: [
+      'Panel and Frame',
+      'Frame and Dialog',
+      'Button and Label',
+      'TextField and TextArea'
+    ],
+    ans: 1,
+    hint: 'Both are top-level windows: one has title bars/borders, the other is for popups/dialogs.',
+    expl: 'Window is directly subclassed by Frame (standard application window) and Dialog (pop-up dialog box).'
+  },
+  {
+    topic: 'Swing Package',
+    type: 'mc',
+    prompt: 'Why are Swing components referred to as "lightweight"?',
+    opts: [
+      'They take up zero RAM memory on the JVM heap',
+      'They are mostly drawn by Java itself rather than relying on native OS widgets',
+      'They cannot have layout managers attached to them',
+      'They do not inherit from java.awt.Component'
+    ],
+    ans: 1,
+    hint: 'Contrast this with AWT heavyweight components that call native OS peers.',
+    expl: 'Swing components are lightweight because they are painted by Java2D without requiring native OS platform peers, providing uniform look and feel.'
+  },
+  {
+    topic: 'UI Components',
+    type: 'mc',
+    prompt: 'According to the syllabus, what is the specific purpose of the "Choice" component in AWT?',
+    opts: [
+      'Accepts multiple-line text input',
+      'Provides a drop-down list',
+      'Allows selecting one option from a group',
+      'Displays static caption text'
+    ],
+    ans: 1,
+    hint: 'In Swing, Choice corresponds to JComboBox.',
+    expl: 'Official syllabus specification: "Choice — Provides a drop-down list".'
+  },
+  {
+    topic: 'Frames and Panels',
+    type: 'mc',
+    prompt: 'What is the key difference between JFrame and JPanel?',
+    opts: [
+      'JFrame represents the main window, whereas JPanel groups components inside that window',
+      'JPanel is heavyweight, while JFrame is lightweight',
+      'JFrame cannot hold layout managers, while JPanel can',
+      'JPanel requires calling setVisible(true) to be seen, while JFrame does not'
+    ],
+    ans: 0,
+    hint: 'Think of JFrame as the external window frame, and JPanel as a grouping tray placed inside.',
+    expl: 'Key syllabus difference: JFrame represents the main top-level application window with title bar and borders, whereas JPanel groups components inside that window.'
+  },
+  {
+    topic: 'Layout Managers',
+    type: 'mc',
+    prompt: 'Which layout manager divides the container into five regions: North, South, East, West, and Center?',
+    opts: [
+      'FlowLayout',
+      'BorderLayout',
+      'GridLayout',
+      'CardLayout'
+    ],
+    ans: 1,
+    hint: 'It is the default layout manager for JFrame.',
+    expl: 'BorderLayout divides a container into North, South, East, West, and Center. Center receives all remaining space.'
+  },
+  {
+    topic: 'Layout Managers',
+    type: 'mc',
+    prompt: 'Which layout manager arranges components in a rectangular grid of rows and columns with equal-sized cells?',
+    opts: [
+      'GridLayout',
+      'GridBagLayout',
+      'FlowLayout',
+      'CardLayout'
+    ],
+    ans: 0,
+    hint: 'All cells are strictly equal in size.',
+    expl: 'GridLayout places components in rows and columns where every cell is strictly equal in dimensions.'
+  },
+  {
+    topic: 'Layout Managers',
+    type: 'mc',
+    prompt: 'Which layout manager arranges components like a stack of cards, displaying only one card at a time?',
+    opts: [
+      'FlowLayout',
+      'CardLayout',
+      'BorderLayout',
+      'GridBagLayout'
+    ],
+    ans: 1,
+    hint: 'Named directly after a deck of playing cards.',
+    expl: 'CardLayout displays one component (or panel) at a time, allowing flipping between different screens in a wizard or tab interface.'
+  },
+  {
+    topic: 'Layout Managers',
+    type: 'mc',
+    prompt: 'Which layout manager is the most flexible, allowing components to occupy different sizes and span multiple cells?',
+    opts: [
+      'GridLayout',
+      'FlowLayout',
+      'GridBagLayout',
+      'BorderLayout'
+    ],
+    ans: 2,
+    hint: 'It uses GridBagConstraints to configure row and column spanning.',
+    expl: 'GridBagLayout arranges components in a dynamic grid where components can have custom heights/widths and span multiple cells.'
+  },
+  {
+    topic: 'Code Interpretation',
+    type: 'mc',
+    prompt: 'Consider this Java snippet:\n\nJFrame f = new JFrame("App");\nf.setSize(400, 300);\nf.add(new JButton("Click"));\n\nWhy does nothing appear on the screen when this program runs?',
+    opts: [
+      'JButton cannot be added directly to a JFrame',
+      'The call f.setVisible(true); is missing',
+      'setDefaultCloseOperation() was not called',
+      'A FlowLayout must be explicitly instantiated first'
+    ],
+    ans: 1,
+    hint: 'Frames are invisible by default when created in memory.',
+    expl: 'In Java Swing, windows remain invisible in memory until setVisible(true) is invoked on the JFrame instance.'
+  },
+  {
+    topic: 'Scenario Analysis',
+    type: 'mc',
+    prompt: 'You are designing a calculator keypad with 16 buttons (0-9, +, -, *, /, =, C). Which layout manager is most appropriate for the keypad panel?',
+    opts: [
+      'FlowLayout',
+      'BorderLayout',
+      'GridLayout(4, 4)',
+      'CardLayout'
+    ],
+    ans: 2,
+    hint: 'Calculators require a uniform grid where every key has identical proportions.',
+    expl: 'GridLayout(4, 4) creates an evenly balanced grid of 4 rows and 4 columns, giving every button identical proportions.'
+  },
+  {
+    topic: 'Scenario Analysis',
+    type: 'mc',
+    prompt: 'You want your application to respond when the user moves the mouse across a drawing canvas. Which listener interface should you register?',
+    opts: [
+      'ActionListener',
+      'MouseListener or MouseMotionListener',
+      'ItemListener',
+      'KeyListener'
+    ],
+    ans: 1,
+    hint: 'Mouse movement is an event in java.awt.event.',
+    expl: 'MouseEvent and mouse movement/dragging are captured by MouseListener and MouseMotionListener.'
+  },
+  {
+    topic: 'Syllabus Summary',
+    type: 'mc',
+    prompt: 'What is the overall architectural relationship between JFrame, JPanel, UI components, Layout Managers, and Event Listeners?',
+    opts: [
+      'A JFrame contains JPanels, JPanels contain UI components, Layout Managers arrange those components, and Event Listeners handle user interactions with them.',
+      'Event Listeners contain JFrames, JFrames contain Layout Managers, and Layout Managers contain JPanels.',
+      'A JPanel is the top-level operating system window, which contains JFrames as child dialogs.',
+      'Layout Managers generate Events, and UI components act as the Listeners for those events.'
+    ],
+    ans: 0,
+    hint: 'Review the golden summary quote from page 8 of the course material.',
+    expl: 'Exact syllabus relationship: "A JFrame contains JPanels, JPanels contain UI components, Layout Managers arrange those components, and Event Listeners handle user interactions with them."'
+  },
+  {
+    topic: 'Swing Architecture',
+    type: 'mc',
+    prompt: 'In Swing, which package do classes such as JFrame, JPanel, JButton, and JLabel belong to?',
+    opts: [
+      'java.awt',
+      'java.awt.event',
+      'javax.swing',
+      'java.gui'
+    ],
+    ans: 2,
+    hint: 'Swing resides in an extension package starting with javax.',
+    expl: 'Swing classes belong to javax.swing, while AWT classes reside in java.awt.'
+  }
+];
+
+function startTestMode(mode) {
+  state.test.mode = mode;
+  state.test.qIndex = 0;
+  state.test.score = 0;
+  state.test.isAnswered = false;
+  state.test.timerSeconds = 300;
+
+  document.getElementById('test-lobby').style.display = 'none';
+  document.getElementById('test-results').style.display = 'none';
+  document.getElementById('test-runner').style.display = 'block';
+
+  const timerEl = document.getElementById('hud-timer');
+  if (mode === 'timed') {
+    timerEl.style.display = 'block';
+    startTimer();
+  } else {
+    timerEl.style.display = 'none';
+    if (state.test.timerInterval) clearInterval(state.test.timerInterval);
+  }
+
+  renderQuestion();
+}
+
+function startTimer() {
+  if (state.test.timerInterval) clearInterval(state.test.timerInterval);
+  updateTimerDisplay();
+
+  state.test.timerInterval = setInterval(() => {
+    state.test.timerSeconds--;
+    updateTimerDisplay();
+
+    if (state.test.timerSeconds <= 0) {
+      clearInterval(state.test.timerInterval);
+      finishTest(true);
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const timerEl = document.getElementById('hud-timer');
+  const sec = Math.max(0, state.test.timerSeconds);
+  const m = String(Math.floor(sec / 60)).padStart(2, '0');
+  const s = String(sec % 60).padStart(2, '0');
+  timerEl.textContent = `${m}:${s}`;
+  timerEl.classList.toggle('urgent', sec <= 60);
+}
+
+function renderQuestion() {
+  state.test.isAnswered = false;
+  state.test.selectedOption = null;
+
+  const q = testBank[state.test.qIndex];
+  document.getElementById('hud-q-num').textContent = state.test.qIndex + 1;
+  document.getElementById('hud-q-total').textContent = testBank.length;
+  document.getElementById('hud-score').textContent = state.test.score;
+
+  document.getElementById('q-topic-badge').textContent = q.topic;
+  document.getElementById('q-type-badge').textContent = q.type === 'mc' ? 'Multiple Choice' : 'Step Ordering';
+  document.getElementById('q-prompt-text').textContent = q.prompt;
+
+  document.getElementById('q-feedback-box').style.display = 'none';
+  document.getElementById('btn-hint').disabled = false;
+  document.getElementById('btn-check-ans').style.display = 'inline-flex';
+  document.getElementById('btn-next-q').style.display = 'none';
+
+  const zone = document.getElementById('q-interactive-zone');
+  zone.innerHTML = '';
+
+  if (q.type === 'mc') {
+    const letters = ['A', 'B', 'C', 'D'];
+    const grid = document.createElement('div');
+    grid.className = 'opt-grid';
+
+    q.opts.forEach((optText, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'opt-btn';
+      btn.innerHTML = `<span class="opt-letter">${letters[idx]}</span><span>${optText}</span>`;
+      btn.onclick = () => {
+        if (state.test.isAnswered) return;
+        grid.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        state.test.selectedOption = idx;
+      };
+      grid.appendChild(btn);
+    });
+    zone.appendChild(grid);
+  } else if (q.type === 'order') {
+    // Permutation items
+    state.test.orderAnswer = [0, 1, 2, 3].sort(() => Math.random() - 0.5);
+    renderOrderList(q, zone);
+  }
+}
+
+function renderOrderList(q, container) {
+  container.innerHTML = `
+    <p style="font-size:0.85rem; color:var(--tx-muted); margin-bottom:0.6rem;">
+      Use the ▲ and ▼ buttons to arrange these 4 steps in the correct execution sequence:
+    </p>
+    <div class="order-list" id="test-order-list">
+      ${state.test.orderAnswer.map((itemIdx, pos) => `
+        <div class="order-row" data-pos="${pos}">
+          <span class="order-num">${pos + 1}.</span>
+          <span style="flex:1;">${q.items[itemIdx]}</span>
+          <div style="display:flex; gap:4px;">
+            <button class="btn sm" onclick="moveOrderItem(${pos}, -1)" ${pos === 0 ? 'disabled' : ''}>▲</button>
+            <button class="btn sm" onclick="moveOrderItem(${pos}, 1)" ${pos === state.test.orderAnswer.length - 1 ? 'disabled' : ''}>▼</button>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function moveOrderItem(pos, dir) {
+  if (state.test.isAnswered) return;
+  const newPos = pos + dir;
+  if (newPos < 0 || newPos >= state.test.orderAnswer.length) return;
+
+  const temp = state.test.orderAnswer[pos];
+  state.test.orderAnswer[pos] = state.test.orderAnswer[newPos];
+  state.test.orderAnswer[newPos] = temp;
+
+  const q = testBank[state.test.qIndex];
+  renderOrderList(q, document.getElementById('q-interactive-zone'));
+}
+
+function revealHint() {
+  const q = testBank[state.test.qIndex];
+  const fb = document.getElementById('q-feedback-box');
+  fb.className = 'feedback-box';
+  fb.style.borderColor = 'var(--pu)';
+  fb.style.background = 'var(--pu-dim)';
+  fb.style.color = '#d8b4fe';
+  fb.innerHTML = `<strong>💡 Hint:</strong> ${q.hint}`;
+  fb.style.display = 'block';
+  document.getElementById('btn-hint').disabled = true;
+}
+
+function submitAnswer() {
+  if (state.test.isAnswered) return;
+  const q = testBank[state.test.qIndex];
+  let isCorrect = false;
+
+  if (q.type === 'mc') {
+    if (state.test.selectedOption === null) {
+      alert('Please select an option before checking.');
+      return;
+    }
+    isCorrect = state.test.selectedOption === q.ans;
+    const buttons = document.querySelectorAll('.opt-btn');
+    buttons.forEach((btn, idx) => {
+      btn.disabled = true;
+      if (idx === q.ans) btn.classList.add('correct');
+      if (idx === state.test.selectedOption && !isCorrect) btn.classList.add('wrong');
+    });
+  } else if (q.type === 'order') {
+    isCorrect = state.test.orderAnswer.every((val, idx) => val === q.ans[idx]);
+    const rows = document.querySelectorAll('.order-row');
+    rows.forEach((r, idx) => {
+      if (state.test.orderAnswer[idx] === q.ans[idx]) r.classList.add('correct');
+      else r.classList.add('wrong');
+    });
+  }
+
+  state.test.isAnswered = true;
+
+  if (isCorrect) {
+    state.test.score++;
+    document.getElementById('hud-score').textContent = state.test.score;
+  } else if (state.test.mode === 'timed') {
+    // 10 second penalty
+    state.test.timerSeconds = Math.max(0, state.test.timerSeconds - 10);
+    updateTimerDisplay();
+  }
+
+  const fb = document.getElementById('q-feedback-box');
+  fb.className = `feedback-box ${isCorrect ? 'correct' : 'wrong'}`;
+  fb.innerHTML = `
+    <strong>${isCorrect ? '✔ Correct Answer!' : '✗ Incorrect Response'}</strong>
+    <div class="expl">${q.expl}</div>
+  `;
+  fb.style.display = 'block';
+
+  document.getElementById('btn-check-ans').style.display = 'none';
+  document.getElementById('btn-next-q').style.display = 'inline-flex';
+  document.getElementById('btn-next-q').textContent =
+    state.test.qIndex < testBank.length - 1 ? 'Next Question ➔' : 'Finish Challenge ➔';
+}
+
+function advanceQuestion() {
+  state.test.qIndex++;
+  if (state.test.qIndex >= testBank.length) {
+    finishTest(false);
+  } else {
+    renderQuestion();
+  }
+}
+
+function finishTest(isOverload) {
+  if (state.test.timerInterval) clearInterval(state.test.timerInterval);
+
+  document.getElementById('test-runner').style.display = 'none';
+  const results = document.getElementById('test-results');
+  results.style.display = 'block';
+
+  const total = testBank.length;
+  const score = state.test.score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('res-score-pct').textContent = pct + '%';
+
+  const titleEl = document.getElementById('res-title');
+  const descEl = document.getElementById('res-desc');
+
+  if (isOverload) {
+    titleEl.textContent = '⚡ REACTOR OVERLOAD: TIME EXPIRED';
+    titleEl.style.color = 'var(--bd)';
+    descEl.textContent = `Time ran out before you could finish all security checkpoints. You answered ${score} out of ${total} correctly. Review the study material in LEARN and try again!`;
+  } else if (pct >= 80) {
+    titleEl.textContent = '🌟 SECURITY CLEARANCE GRANTED';
+    titleEl.style.color = 'var(--ok)';
+    descEl.textContent = `Exceptional mastery! You answered ${score} out of ${total} questions correctly (${pct}%). You demonstrated a deep understanding of Java GUI components, event delegation, and layouts.`;
+  } else {
+    titleEl.textContent = '⚠️ CHALLENGE COMPLETED – REVIEW SUGGESTED';
+    titleEl.style.color = 'var(--gold)';
+    descEl.textContent = `You scored ${score} out of ${total} (${pct}%). Some concepts need reinforcement. We recommend reviewing the interactive simulations in the LEARN section before retesting.`;
+  }
+}
+
+// Initial bootstrap
+window.addEventListener('DOMContentLoaded', () => {
+  initTopic1();
+  initTopic3();
+  switchLayout('flow', document.querySelector('.layout-select-pill'));
+});
 </script>
 </body>
 </html>
