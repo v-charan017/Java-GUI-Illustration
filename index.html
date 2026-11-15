@@ -1468,7 +1468,6 @@ button {
 <header id="masthead">
   <a href="#" class="brand" onclick="navigate('home'); return false;">
     <span>⚡ Java GUI Learning</span>
-    <span class="brand-badge">Syllabus Edition</span>
   </a>
   <div class="nav-controls">
     <button class="nav-pill active" id="pill-home" onclick="navigate('home')">Home</button>
@@ -2564,9 +2563,16 @@ frame.<span class="fn">add</span>(panel);</pre>
     <!-- Active Test Quiz Screen -->
     <div class="test-quiz-shell" id="test-runner" style="display:none;">
       <div class="test-hud">
-        <div class="hud-pill">Question: <strong id="hud-q-num">1</strong> / <strong id="hud-q-total">18</strong></div>
-        <div class="hud-pill">Score: <strong id="hud-score">0</strong></div>
-        <div class="timer-pill" id="hud-timer">05:00</div>
+        <div style="display:flex; align-items:center; gap:1.2rem; flex-wrap:wrap;">
+          <div class="hud-pill">Question: <strong id="hud-q-num">1</strong> / <strong id="hud-q-total">18</strong></div>
+          <div class="hud-pill">Score: <strong id="hud-score">0</strong></div>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.8rem;">
+          <div class="timer-pill" id="hud-timer">05:00</div>
+          <button class="btn sm" onclick="exitTest()" title="Exit and abandon current test" style="border-color:rgba(244,63,94,0.45); color:var(--bd); background:rgba(244,63,94,0.08); font-size:0.82rem; padding:0.35rem 0.8rem;">
+            ✕ Exit Test
+          </button>
+        </div>
       </div>
 
       <div class="question-card" id="q-card-body">
@@ -2598,6 +2604,10 @@ frame.<span class="fn">add</span>(panel);</pre>
 
     <!-- Final Score / Results Screen -->
     <div class="results-card" id="test-results" style="display:none;">
+      <div style="margin-bottom:0.8rem;">
+        <span class="q-badge" id="res-mode-badge">Practice Mode (Unlimited Time)</span>
+      </div>
+
       <div class="score-circle">
         <div class="pct" id="res-score-pct">100%</div>
         <div class="label">Score</div>
@@ -2608,9 +2618,11 @@ frame.<span class="fn">add</span>(panel);</pre>
         You have successfully bypassed all security checkpoints and demonstrated complete understanding of Java GUI Programming.
       </p>
 
-      <div style="display:flex; justify-content:center; gap:0.8rem; flex-wrap:wrap;">
-        <button class="btn" onclick="startTestMode('practice')">🔄 Retake Practice</button>
-        <button class="btn pu" onclick="navigate('learn')">📚 Review Course Notes</button>
+      <!-- Dynamic action buttons based on test mode just completed -->
+      <div id="res-actions-container" style="display:flex; justify-content:center; gap:0.8rem; flex-wrap:wrap;">
+        <button class="btn" onclick="startTestMode('practice')">🔄 Retake Practice Test (Unlimited Time)</button>
+        <button class="btn pu" onclick="startTestMode('timed')">⏱️ Switch to Timed Mode (Escape Room)</button>
+        <button class="btn sm" onclick="navigate('learn')">📚 Review Course Notes</button>
       </div>
     </div>
   </div>
@@ -3406,6 +3418,20 @@ const testBank = [
   }
 ];
 
+function exitTest() {
+  const confirmed = confirm("Are you sure you want to exit the test?\n\nYour current progress will be lost and you will need to restart the test.");
+  if (confirmed) {
+    if (state.test.timerInterval) clearInterval(state.test.timerInterval);
+    state.test.qIndex = 0;
+    state.test.score = 0;
+    state.test.isAnswered = false;
+    document.getElementById('test-runner').style.display = 'none';
+    document.getElementById('test-results').style.display = 'none';
+    document.getElementById('test-lobby').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
 function startTestMode(mode) {
   state.test.mode = mode;
   state.test.qIndex = 0;
@@ -3619,11 +3645,21 @@ function finishTest(isOverload) {
 
   const titleEl = document.getElementById('res-title');
   const descEl = document.getElementById('res-desc');
+  const modeBadge = document.getElementById('res-mode-badge');
+  const actionsContainer = document.getElementById('res-actions-container');
+
+  const isTimed = state.test.mode === 'timed';
+  if (modeBadge) {
+    modeBadge.textContent = isTimed ? '⏱️ Timed Mode (Escape Room)' : '🎓 Unlimited Time (Practice Mode)';
+    modeBadge.style.color = isTimed ? 'var(--cy)' : 'var(--pu)';
+    modeBadge.style.borderColor = isTimed ? 'var(--border)' : 'var(--border-pu)';
+    modeBadge.style.background = isTimed ? 'var(--cy-dim)' : 'var(--pu-dim)';
+  }
 
   if (isOverload) {
     titleEl.textContent = '⚡ REACTOR OVERLOAD: TIME EXPIRED';
     titleEl.style.color = 'var(--bd)';
-    descEl.textContent = `Time ran out before you could finish all security checkpoints. You answered ${score} out of ${total} correctly. Review the study material in LEARN and try again!`;
+    descEl.textContent = `Time ran out before you could finish all security checkpoints. You answered ${score} out of ${total} correctly. Review the study material in LEARN or try again!`;
   } else if (pct >= 80) {
     titleEl.textContent = '🌟 SECURITY CLEARANCE GRANTED';
     titleEl.style.color = 'var(--ok)';
@@ -3632,6 +3668,23 @@ function finishTest(isOverload) {
     titleEl.textContent = '⚠️ CHALLENGE COMPLETED – REVIEW SUGGESTED';
     titleEl.style.color = 'var(--gold)';
     descEl.textContent = `You scored ${score} out of ${total} (${pct}%). Some concepts need reinforcement. We recommend reviewing the interactive simulations in the LEARN section before retesting.`;
+  }
+
+  // Render option to either retake the same test OR switch to the other test mode
+  if (actionsContainer) {
+    if (isTimed) {
+      actionsContainer.innerHTML = `
+        <button class="btn" onclick="startTestMode('timed')">⏱️ Retake Timed Test (Escape Room)</button>
+        <button class="btn pu" onclick="startTestMode('practice')">🎓 Switch to Unlimited Time (Practice Mode)</button>
+        <button class="btn sm" onclick="navigate('learn')" style="background:rgba(255,255,255,0.05); color:var(--tx-muted); border-color:rgba(255,255,255,0.15);">📚 Review Course Notes</button>
+      `;
+    } else {
+      actionsContainer.innerHTML = `
+        <button class="btn" onclick="startTestMode('practice')">🔄 Retake Practice Test (Unlimited Time)</button>
+        <button class="btn pu" onclick="startTestMode('timed')">⏱️ Switch to Timed Mode (Escape Room)</button>
+        <button class="btn sm" onclick="navigate('learn')" style="background:rgba(255,255,255,0.05); color:var(--tx-muted); border-color:rgba(255,255,255,0.15);">📚 Review Course Notes</button>
+      `;
+    }
   }
 }
 
